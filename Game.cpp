@@ -1,5 +1,9 @@
 #include "Game.hpp"
 
+SDL_Texture* playerTex;
+SDL_Rect srcRect, destRect;
+int cnt = 0;
+
 Game::Game()
 {
 
@@ -34,6 +38,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     } else {
         isRunning = false;
     }
+    SDL_Surface* tempSurface = IMG_Load("assets/marisad.png");
+    playerTex = SDL_CreateTextureFromSurface (renderer, tempSurface);
+    SDL_FreeSurface(tempSurface);
 }
 
 void Game::handleEvent()
@@ -53,13 +60,17 @@ void Game::handleEvent()
 
 void Game::update()
 {
-    
+    cnt++;
+    destRect.h = 64;
+    destRect.w = 128;
+    destRect.x = cnt;
+    destRect.y = cnt;
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    //add stff to renderer
+    SDL_RenderCopy(renderer, playerTex, NULL, &destRect);
     SDL_RenderPresent(renderer);
 }
 

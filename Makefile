@@ -1,18 +1,14 @@
-#Copyright Notice:
-#The files within this zip file are copyrighted by Lazy Foo' Productions (2004-2014)
-#and may not be redistributed without written permission.
-
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp
+OBJS = main.cpp Game.cpp
 
 #CC specifies which compiler we're using
 CC = g++
 
 #INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -IC:\src\include\SDL2
+INCLUDE_PATHS = -I src\include
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -LC:\src\lib
+LIBRARY_PATHS = -L src\lib
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
@@ -20,13 +16,11 @@ LIBRARY_PATHS = -LC:\src\lib
 COMPILER_FLAGS = -w -Wl,-subsystem,windows
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf 
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 #OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = Main
+OBJ_NAME = Danmaku
 
 #This is the target that compiles our executable
 all : $(OBJS)
 	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
-
-# g++ *.cpp *.hpp main.cpp -I src/include -L src/lib -o main.exe -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer

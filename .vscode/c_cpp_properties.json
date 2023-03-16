@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/src/include",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/include/SDL2"
             ],
             "defines": [
                 "_DEBUG",
