@@ -28,3 +28,4 @@ int main( int argc, char **argv ){
     return 0;
 }
 
+//g++ -Wall -g -o Danmaku.exe main.cpp Game.cpp TextureManager.cpp -I src\include -L src\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer 

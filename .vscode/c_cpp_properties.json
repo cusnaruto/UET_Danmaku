@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/src/include",
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/src/include/SDL2"
+                "${workspaceFolder}/src/include/SDL2",
+                "${workspaceFolder}/src"
             ],
             "defines": [
                 "_DEBUG",

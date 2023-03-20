@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "TextureManager.hpp"
 
 SDL_Texture* playerTex;
 SDL_Rect srcRect, destRect;
@@ -38,9 +39,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     } else {
         isRunning = false;
     }
-    SDL_Surface* tempSurface = IMG_Load("assets/marisad.png");
-    playerTex = SDL_CreateTextureFromSurface (renderer, tempSurface);
-    SDL_FreeSurface(tempSurface);
+    playerTex = TextureManager::LoadTexture("assets/dekafumo.jpg", renderer);
 }
 
 void Game::handleEvent()
@@ -61,8 +60,8 @@ void Game::handleEvent()
 void Game::update()
 {
     cnt++;
-    destRect.h = 64;
-    destRect.w = 128;
+    destRect.h = 62;
+    destRect.w = 101;
     destRect.x = cnt;
     destRect.y = cnt;
 }
@@ -81,3 +80,5 @@ void Game::clean()
     SDL_Quit();
     std::cout << "cweaned!" << std::endl;
 }
+
+//
