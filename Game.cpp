@@ -1,10 +1,9 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
+#include "GameObject.hpp"
 
-SDL_Texture* playerTex;
-SDL_Rect srcRect, destRect;
-int cnt = 0;
-
+GameObject* player;
+GameObject* fumo;
 Game::Game()
 {
 
@@ -39,7 +38,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     } else {
         isRunning = false;
     }
-    playerTex = TextureManager::LoadTexture("assets/dekafumo.jpg", renderer);
+   player = new GameObject("assets/marisad.png", renderer,0,0);
+   fumo = new GameObject("assets/dekafumo.jpg",renderer, 50,50);
 }
 
 void Game::handleEvent()
@@ -59,17 +59,15 @@ void Game::handleEvent()
 
 void Game::update()
 {
-    cnt++;
-    destRect.h = 62;
-    destRect.w = 101;
-    destRect.x = cnt;
-    destRect.y = cnt;
+    player->Update();
+    fumo -> Update();
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, playerTex, NULL, &destRect);
+    player->Render();
+    fumo -> Render();
     SDL_RenderPresent(renderer);
 }
 
