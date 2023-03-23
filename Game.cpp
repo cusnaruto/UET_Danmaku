@@ -1,9 +1,15 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
 #include "GameObject.hpp"
+#include "ECS.hpp"
+#include "Component.hpp"
 
 GameObject* player;
 GameObject* fumo;
+
+Manager manager;
+auto& newPlayer(manager.addEntity());
+
 Game::Game()
 {
 
@@ -40,6 +46,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     }
    player = new GameObject("assets/marisad.png", renderer,0,0);
    fumo = new GameObject("assets/dekafumo.jpg",renderer, 50,50);
+   newPlayer.addComponent<PositionComponent>();
+   
 }
 
 void Game::handleEvent()
@@ -61,6 +69,8 @@ void Game::update()
 {
     player->Update();
     fumo -> Update();
+    manager.update();
+    std::cout << newPlayer.getComponent<PositionComponent>().x() << " , " << newPlayer.getComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render()
