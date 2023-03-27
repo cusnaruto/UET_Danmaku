@@ -1,15 +1,11 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
-#include "GameObject.hpp"
-#include "ECS.hpp"
-#include "Component.hpp"
-
-GameObject* player;
-GameObject* fumo;
+#include "ECS/Component.hpp"
 
 Manager manager;
-auto& newPlayer(manager.addEntity());
+auto& Player(manager.addEntity());
 
+SDL_Renderer* Game::renderer = nullptr;
 Game::Game()
 {
 
@@ -44,9 +40,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     } else {
         isRunning = false;
     }
-   player = new GameObject("assets/marisad.png", renderer,0,0);
-   fumo = new GameObject("assets/dekafumo.jpg",renderer, 50,50);
-   newPlayer.addComponent<PositionComponent>();
+    
+    Player.addComponent<PositionComponent>();
+    Player.addComponent<SpriteComponent>("assets/marisad.png");
    
 }
 
@@ -67,17 +63,14 @@ void Game::handleEvent()
 
 void Game::update()
 {
-    player->Update();
-    fumo -> Update();
+    manager.refresh();
     manager.update();
-    std::cout << newPlayer.getComponent<PositionComponent>().x() << " , " << newPlayer.getComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    player->Render();
-    fumo -> Render();
+    manager.draw();
     SDL_RenderPresent(renderer);
 }
 
