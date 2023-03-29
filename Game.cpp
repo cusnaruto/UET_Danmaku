@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "TextureManager.hpp"
 #include "ECS/Component.hpp"
+#include "Vector2D.hpp"
 
 Manager manager;
 auto& Player(manager.addEntity());
@@ -41,7 +42,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
     
-    Player.addComponent<PositionComponent>();
+    Player.addComponent<TransformComponent>();
     Player.addComponent<SpriteComponent>("assets/marisad.png");
    
 }
@@ -65,6 +66,7 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
+    Player.getComponent<TransformComponent>().position.Add(Vector2D(5,0));
 }
 
 void Game::render()
