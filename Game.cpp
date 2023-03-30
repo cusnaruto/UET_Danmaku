@@ -7,6 +7,8 @@ Manager manager;
 auto& Player(manager.addEntity());
 
 SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
+
 Game::Game()
 {
 
@@ -44,12 +46,13 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     
     Player.addComponent<TransformComponent>();
     Player.addComponent<SpriteComponent>("assets/marisad.png");
+    Player.addComponent<KeyboardController>();
    
 }
 
 void Game::handleEvent()
 {
-    SDL_Event event;
+
     SDL_PollEvent(&event);
     switch (event.type)
     {
@@ -65,8 +68,7 @@ void Game::handleEvent()
 void Game::update()
 {
     manager.refresh();
-    manager.update();
-    Player.getComponent<TransformComponent>().position.Add(Vector2D(5,0));
+    manager.update();   
 }
 
 void Game::render()
