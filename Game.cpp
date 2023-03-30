@@ -2,9 +2,11 @@
 #include "TextureManager.hpp"
 #include "ECS/Component.hpp"
 #include "Vector2D.hpp"
+#include "Collision.hpp"
 
 Manager manager;
 auto& Player(manager.addEntity());
+auto& bullet(manager.addEntity());
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
@@ -44,10 +46,14 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
     
-    Player.addComponent<TransformComponent>();
+    Player.addComponent<TransformComponent>(2);
     Player.addComponent<SpriteComponent>("assets/marisad.png");
     Player.addComponent<KeyboardController>();
-   
+    Player.addComponent<ColliderComponent>("player");
+
+   bullet.addComponent<TransformComponent>(300.0f, 300.0f, 20,20,1);
+   bullet.addComponent<SpriteComponent>("assets/greenbullet.png");
+   bullet.addComponent<ColliderComponent>("bullet");
 }
 
 void Game::handleEvent()
@@ -69,6 +75,12 @@ void Game::update()
 {
     manager.refresh();
     manager.update();   
+
+    if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, 
+        bullet.getComponent<ColliderComponent>().collider))
+    {
+        std::cout << "Collide" << std::endl;
+    }
 }
 
 void Game::render()

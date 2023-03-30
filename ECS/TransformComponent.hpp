@@ -7,9 +7,18 @@ class TransformComponent : public Component
         Vector2D position;
         Vector2D velocity;
 
+        int height = 62;
+        int width = 101;
+        int scale = 1;
+
         int speed = 3;
 
-
+        TransformComponent(int sc)
+        {
+            position.x = 0.0f;
+            position.y = 0.0f;
+            scale = sc;
+        }
         TransformComponent()
         {
             position.x = 0.0f;
@@ -20,6 +29,15 @@ class TransformComponent : public Component
         {
             position.x = x;
             position.y = y;
+        }
+
+        TransformComponent(float x, float y,int h, int w, int s)
+        {
+            position.x = x;
+            position.y = y;
+            height = h;
+            width = w;
+            scale = s;
         }
 
         void init() override
