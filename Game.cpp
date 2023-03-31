@@ -11,6 +11,8 @@ auto& bullet(manager.addEntity());
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+std::vector<ColliderComponent*> Game::colliders;
+
 Game::Game()
 {
 
@@ -51,9 +53,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
 
-   bullet.addComponent<TransformComponent>(300.0f, 300.0f, 20,20,1);
-   bullet.addComponent<SpriteComponent>("assets/greenbullet.png");
-   bullet.addComponent<ColliderComponent>("bullet");
+    bullet.addComponent<TransformComponent>(300.0f, 300.0f, 20,20,1);
+    bullet.addComponent<SpriteComponent>("assets/greenbullet.png");
+    bullet.addComponent<ColliderComponent>("bullet");
 }
 
 void Game::handleEvent()
@@ -71,16 +73,14 @@ void Game::handleEvent()
     }
 }
 
-void Game::update()
-{
-    manager.refresh();
-    manager.update();   
-
-    if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, 
-        bullet.getComponent<ColliderComponent>().collider))
-    {
-        std::cout << "Collide" << std::endl;
-    }
+void Game::update() {
+	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
+	manager.refresh();
+	manager.update();
+	if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, bullet.getComponent<ColliderComponent>().collider)) {
+		Player.getComponent<TransformComponent>().position = playerPos;
+		std::cout << "Collision!" << std::endl;
+	}
 }
 
 void Game::render()
