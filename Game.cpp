@@ -8,6 +8,14 @@ Manager manager;
 auto& Player(manager.addEntity());
 auto& bullet(manager.addEntity());
 
+enum groupLabels : std::size_t
+{
+    groupBullet,
+    groupPlayers,
+    groupEnemies,
+    groupColliders
+};
+
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
@@ -52,10 +60,12 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Player.addComponent<SpriteComponent>("assets/marisad.png");
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
+    Player.addGroup(groupPlayers);
 
     bullet.addComponent<TransformComponent>(300.0f, 300.0f, 20,20,1);
     bullet.addComponent<SpriteComponent>("assets/greenbullet.png");
     bullet.addComponent<ColliderComponent>("bullet");
+    bullet.addGroup(groupBullet);
 }
 
 void Game::handleEvent()
@@ -82,11 +92,23 @@ void Game::update() {
 		std::cout << "Collision!" << std::endl;
 	}
 }
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
+
+
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    manager.draw();
+    for (auto& p : players)
+    {
+        p->draw();
+    }
+    for (auto& e : enemies)
+    {
+        e->draw();
+    }
+
     SDL_RenderPresent(renderer);
 }
 
