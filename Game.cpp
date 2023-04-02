@@ -56,13 +56,13 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
     
-    Player.addComponent<TransformComponent>(2);
-    Player.addComponent<SpriteComponent>("assets/marisad.png");
+    Player.addComponent<TransformComponent>(0.0f,0.0f,49,32,2);
+    Player.addComponent<SpriteComponent>("assets/reimu.png",8,100);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
     Player.addGroup(groupPlayers);
 
-    bullet.addComponent<TransformComponent>(300.0f, 300.0f, 20,20,1);
+    bullet.addComponent<TransformComponent>(300.0f, 300.0f, 24,29,2);
     bullet.addComponent<SpriteComponent>("assets/greenbullet.png");
     bullet.addComponent<ColliderComponent>("bullet");
     bullet.addGroup(groupBullet);
@@ -93,7 +93,7 @@ void Game::update() {
 	}
 }
 auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
+auto& bullets(manager.getGroup(groupBullet));
 
 
 
@@ -104,7 +104,7 @@ void Game::render()
     {
         p->draw();
     }
-    for (auto& e : enemies)
+    for (auto& e : bullets)
     {
         e->draw();
     }
