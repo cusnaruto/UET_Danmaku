@@ -8,7 +8,7 @@ class TransformComponent : public Component
         Vector2D velocity;
 
         int height = 49;
-        int width = 255;
+        int width = 32;
         int scale = 1;
 
         int speed = 3;

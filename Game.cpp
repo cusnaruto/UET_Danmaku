@@ -56,8 +56,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
     
-    Player.addComponent<TransformComponent>(0.0f,0.0f,49,32,2);
-    Player.addComponent<SpriteComponent>("assets/reimu.png",8,100);
+    Player.addComponent<TransformComponent>();
+    Player.addComponent<SpriteComponent>("assets/reimu.png",true);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
     Player.addGroup(groupPlayers);
