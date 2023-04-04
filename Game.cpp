@@ -8,6 +8,7 @@ Manager manager;
 auto& Player(manager.addEntity());
 auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
+auto& Background(manager.addEntity());
 
 enum groupLabels : std::size_t
 {
@@ -74,6 +75,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Layout.addComponent<ColliderComponent>("layout");
     Layout.addGroup(groupLayouts);
 
+    Background.addComponent<TransformComponent>(35.0f,18.0f,562,483,2);
+    Background.addComponent<SpriteComponent>("assets/bg.png",false);
+    Background.addComponent<ColliderComponent>("layout");
+    Background.addGroup(groupLayouts);
+
 }
 
 void Game::handleEvent()
@@ -92,13 +98,8 @@ void Game::handleEvent()
 }
 
 void Game::update() {
-	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
 	manager.refresh();
 	manager.update();
-	if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, bullet.getComponent<ColliderComponent>().collider)) {
-		Player.getComponent<TransformComponent>().position = playerPos;
-		std::cout << "Collision!" << std::endl;
-	}
 }
 auto& players(manager.getGroup(groupPlayers));
 auto& bullets(manager.getGroup(groupBullet));
@@ -108,6 +109,7 @@ auto& bullets(manager.getGroup(groupBullet));
 void Game::render()
 {
     SDL_RenderClear(renderer);
+    Background.draw();
     Layout.draw();
     for (auto& p : players)
     {
