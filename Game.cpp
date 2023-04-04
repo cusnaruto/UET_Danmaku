@@ -7,13 +7,15 @@
 Manager manager;
 auto& Player(manager.addEntity());
 auto& bullet(manager.addEntity());
+auto& Layout(manager.addEntity());
 
 enum groupLabels : std::size_t
 {
     groupBullet,
     groupPlayers,
     groupEnemies,
-    groupColliders
+    groupColliders,
+    groupLayouts
 };
 
 SDL_Renderer* Game::renderer = nullptr;
@@ -56,7 +58,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
     
-    Player.addComponent<TransformComponent>();
+    Player.addComponent<TransformComponent>(285.0f,525.0f,49,32,1);
     Player.addComponent<SpriteComponent>("assets/reimu.png",true);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
@@ -66,6 +68,12 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     bullet.addComponent<SpriteComponent>("assets/greenbullet.png");
     bullet.addComponent<ColliderComponent>("bullet");
     bullet.addGroup(groupBullet);
+
+    Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
+    Layout.addComponent<SpriteComponent>("assets/gameplaylayout.png",false);
+    Layout.addComponent<ColliderComponent>("layout");
+    Layout.addGroup(groupLayouts);
+
 }
 
 void Game::handleEvent()
@@ -100,6 +108,7 @@ auto& bullets(manager.getGroup(groupBullet));
 void Game::render()
 {
     SDL_RenderClear(renderer);
+    Layout.draw();
     for (auto& p : players)
     {
         p->draw();
@@ -108,7 +117,6 @@ void Game::render()
     {
         e->draw();
     }
-
     SDL_RenderPresent(renderer);
 }
 

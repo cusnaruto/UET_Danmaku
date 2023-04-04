@@ -44,12 +44,12 @@ class TransformComponent : public Component
         void update() override
         {
             position.x += velocity.x * speed;
-            if ((position.x < 0) || (position.x + 62 > 1280))
+            if ((position.x < 36) || (position.x + 37 > 530 ))  //38,18,485,565
             {
                 position.x -= velocity.x * speed;
             }
             position.y += velocity.y * speed;
-            if ((position.y < 0) || (position.x + 102 > 720))
+            if ((position.y < 18) || (position.y + 19 > 555))
             {
                 position.y -= velocity.y * speed;
             }
