@@ -6,6 +6,7 @@
 #include <vector>
 
 class ColliderComponent;
+class AssetManager;
 
 class Game {
 
@@ -19,7 +20,7 @@ public:
         void update();
         void render();
         void clean();
-        
+
         bool running()
         {
             return isRunning;
@@ -27,7 +28,15 @@ public:
         static SDL_Renderer *renderer;
         static SDL_Event event;
         static std::vector<ColliderComponent*> colliders;
-
+        static AssetManager* assets;
+        enum groupLabels : std::size_t
+        {
+                groupBullets,
+                groupPlayers,
+                groupEnemies,
+                groupColliders,
+                groupLayouts,
+        };
 private:
         bool isRunning;
         SDL_Window* window; 

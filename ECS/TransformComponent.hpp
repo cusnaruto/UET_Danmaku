@@ -15,7 +15,8 @@ class TransformComponent : public Component
 
         TransformComponent(int sc)
         {
-            position.Zero();
+            position.x = 285;
+            position.y = 525;
             scale = sc;
         }
         TransformComponent()
