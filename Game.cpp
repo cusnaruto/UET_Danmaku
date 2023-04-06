@@ -10,6 +10,7 @@ auto& Player(manager.addEntity());
 auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
+auto& label(manager.addEntity());
 
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::renderer = nullptr;
@@ -52,16 +53,25 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         isRunning = false;
     }
 
+    if (TTF_Init() == -1)
+    {
+        std::cout << "font error" << std::endl;
+    }
+
     assets->AddTexture("bullet", "assets/greenbullet.png");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/bg.png");
+    assets->AddFont("visby", "assets/visby.ttf", 16);
 
     Player.addComponent<TransformComponent>(285.0f,525.0f,49,32,1);
     Player.addComponent<SpriteComponent>("player",true);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
     Player.addGroup(groupPlayers);
+
+    SDL_Color white = {255,255,255,255};
+    label.addComponent<UILabel>(630,90, "727 wysi", "visby", white);
 
     assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"bullet");
     assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"bullet");
@@ -128,6 +138,7 @@ void Game::render()
     {
         b->draw();
     }
+    label.draw();
     SDL_RenderPresent(renderer);
 }
 
