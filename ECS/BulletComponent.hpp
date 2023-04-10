@@ -7,13 +7,9 @@ class BulletComponent : public Component
 {
     public:
         BulletComponent(int rng, int spd, Vector2D vel) : range(rng), speed(spd), velocity(vel)
-        {
-
-        }
+        {}
         ~BulletComponent()
-        {
-
-        }
+        {}
         void init() override
         {
             transform = &entity->getComponent<TransformComponent>();

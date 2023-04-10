@@ -13,7 +13,7 @@ LIBRARY_PATHS = -L src\lib
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
 # -Wl,-subsystem,windows gets rid of the console window
-COMPILER_FLAGS = -w -Wl,-subsystem,windows
+COMPILER_FLAGS = -w 
 
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
@@ -24,3 +24,4 @@ OBJ_NAME = Danmaku
 #This is the target that compiles our executable
 all : $(OBJS)
 	$(CC) -o $(OBJ_NAME) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) 
+	./$(OBJ_NAME)

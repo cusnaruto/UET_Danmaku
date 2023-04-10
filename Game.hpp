@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+
 class ColliderComponent;
 class AssetManager;
 
@@ -20,7 +21,7 @@ public:
         void update();
         void render();
         void clean();
-
+        void spawnBullet();
         bool running()
         {
             return isRunning;

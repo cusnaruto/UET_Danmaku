@@ -4,9 +4,11 @@
 #include "Vector2D.hpp"
 #include "Collision.hpp"
 #include "AssetManager.hpp"
+#include <sstream>
 
 Manager manager;
 auto& Player(manager.addEntity());
+auto& Enemy(manager.addEntity());
 auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
@@ -20,7 +22,6 @@ std::vector<ColliderComponent*> Game::colliders;
 
 Game::Game()
 {
-
 }
 Game::~Game()
 {
@@ -58,7 +59,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         std::cout << "font error" << std::endl;
     }
 
-    assets->AddTexture("bullet", "assets/greenbullet.png");
+    assets->AddTexture("bullet", "assets/playerbullet.png");
+    assets->AddTexture("enemy", "assets/dekafumo.jpg");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/bg.png");
@@ -75,7 +77,14 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
     assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"bullet");
     assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"bullet");
+    bullet.addComponent<ColliderComponent>("bullet");
+    bullet.addGroup(groupEnemies);
     
+    Enemy.addComponent<TransformComponent>(285.0f,200.0f,200,200,1);
+    Enemy.addComponent<SpriteComponent>("enemy",false);
+    Enemy.addComponent<ColliderComponent>("enemy");
+    Enemy.addGroup(groupEnemies);
+
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
     Layout.addComponent<SpriteComponent>("layout",false);
     Layout.addComponent<ColliderComponent>("layout");
@@ -88,31 +97,48 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
 }
 
+void Game::spawnBullet()
+{
+    Vector2D player = Player.getComponent<TransformComponent>().position;
+    assets->CreateBullet(Vector2D(100,525), Vector2D(0,-2),1000, 2,"bullet");
+    std::cout << "shooted" << std::endl;
+}
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& bullets(manager.getGroup(Game::groupBullets));
-
+auto& enemies(manager.getGroup(Game::groupEnemies));
 
 
 void Game::handleEvent()
 {
-
+    Vector2D playerPos = Player.getComponent<TransformComponent>().position;
     SDL_PollEvent(&event);
     switch (event.type)
     {
     case SDL_QUIT:
         isRunning = false;
         break;
-    
-    default:
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_z)
+        {
+            spawnBullet();
+        }
         break;
     }
 }
-
+int i;
 void Game::update() {
 	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
+    i++;
+    std::stringstream ss;
+    ss << i;
+    label.getComponent<UILabel>().SetLabelText(ss.str(),"visby");
 	manager.refresh();
     manager.update();
+    for (auto& b : bullets)
+    {
+        b->getComponent<BulletComponent>().update();
+    }
     for (auto& b : bullets)
     {
         if(Collision::AABB(Player.getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider))
@@ -121,6 +147,8 @@ void Game::update() {
             Player.getComponent<TransformComponent>().position = playerPos;
         }
     }
+    
+    
 }
 
 
@@ -134,9 +162,13 @@ void Game::render()
     {
         p->draw();
     }
+    for (auto& e : enemies)
+    {
+        e->draw();
+    }
     for (auto& b : bullets)
     {
-        b->draw();
+        b->getComponent<SpriteComponent>().draw();
     }
     label.draw();
     SDL_RenderPresent(renderer);
