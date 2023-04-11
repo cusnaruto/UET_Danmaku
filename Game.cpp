@@ -14,6 +14,8 @@ auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
 
+int playerLives = 3;
+
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
@@ -27,6 +29,7 @@ Game::~Game()
 {
 
 }
+
 
 void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen)
 {
@@ -59,25 +62,27 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         std::cout << "font error" << std::endl;
     }
 
-    assets->AddTexture("bullet", "assets/playerbullet.png");
+    assets->AddTexture("mybullet", "assets/playerbullet.png");
     assets->AddTexture("enemy", "assets/dekafumo.jpg");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/bg.png");
     assets->AddFont("visby", "assets/visby.ttf", 16);
 
-    Player.addComponent<TransformComponent>(285.0f,525.0f,49,32,1);
-    Player.addComponent<SpriteComponent>("player",true);
+    Player.addComponent<PlayerComponent>(Vector2D{285, 525}, 3.0f, 3);
+    Player.addComponent<SpriteComponent>("player", true);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
     Player.addGroup(groupPlayers);
 
     SDL_Color white = {255,255,255,255};
-    label.addComponent<UILabel>(630,90, "727 wysi", "visby", white);
+    label.addComponent<UILabel>(630,135, "727 wysi", "visby", white);
 
-    assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"bullet");
-    assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"bullet");
-    bullet.addComponent<ColliderComponent>("bullet");
+    assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"mybullet");
+    assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"mybullet");
+    bullet.addComponent<TransformComponent>(NULL,NULL,21,23,1);
+    bullet.addComponent<SpriteComponent>("bullet",true);
+    bullet.addComponent<ColliderComponent>("mybullet");
     bullet.addGroup(groupEnemies);
     
     Enemy.addComponent<TransformComponent>(285.0f,200.0f,200,200,1);
@@ -100,8 +105,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 void Game::spawnBullet()
 {
     Vector2D player = Player.getComponent<TransformComponent>().position;
-    assets->CreateBullet(Vector2D(100,525), Vector2D(0,-2),1000, 2,"bullet");
-    std::cout << "shooted" << std::endl;
+    assets->CreateBullet(Vector2D(player.x+6,player.y-15), Vector2D(0,-4),1000, 2,"mybullet");
 }
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
@@ -112,6 +116,7 @@ auto& enemies(manager.getGroup(Game::groupEnemies));
 void Game::handleEvent()
 {
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
+    Uint32 lastBulletTime = 0;
     SDL_PollEvent(&event);
     switch (event.type)
     {
@@ -121,15 +126,15 @@ void Game::handleEvent()
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_z)
         {
-            spawnBullet();
+            spawnBullet();                                    
         }
         break;
     }
 }
-int i;
+
 void Game::update() {
 	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
-    i++;
+    int i = playerLives;
     std::stringstream ss;
     ss << i;
     label.getComponent<UILabel>().SetLabelText(ss.str(),"visby");
@@ -138,17 +143,16 @@ void Game::update() {
     for (auto& b : bullets)
     {
         b->getComponent<BulletComponent>().update();
-    }
-    for (auto& b : bullets)
-    {
-        if(Collision::AABB(Player.getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider))
+        if(Collision::AABB(Enemy.getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider))
         {
             b->destroy();
-            Player.getComponent<TransformComponent>().position = playerPos;
+            std::cout << "hit enemies" << std::endl;
+        }
+        if (b->getComponent<TransformComponent>().height <= 20)
+        {
+            b->destroy();
         }
     }
-    
-    
 }
 
 

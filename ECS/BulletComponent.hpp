@@ -23,10 +23,10 @@ class BulletComponent : public Component
             {
                 entity->destroy();
             }
-            else if (transform->position.x > 525 || 
-                    transform->position.x < 30 ||
-                    transform->position.y > 580 ||
-                    transform->position.y < 20) 
+            else if (transform->position.x >= 525 || 
+                    transform->position.x <= 30 ||
+                    transform->position.y >= 580 ||
+                    transform->position.y <= 20) 
             {
                 entity->destroy();
             }

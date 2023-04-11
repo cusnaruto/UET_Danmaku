@@ -17,7 +17,7 @@ class KeyboardController : public Component
 
         void update() override
         {
-            if (Game::event.type == SDL_KEYDOWN && Game::event.key.repeat == 0)
+            if (Game::event.type == SDL_KEYDOWN)
             {
                     switch (Game::event.key.keysym.sym)
                     {

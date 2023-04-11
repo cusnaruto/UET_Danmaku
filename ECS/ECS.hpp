@@ -49,6 +49,7 @@ class Entity
     private:
         Manager& manager;
         bool active = true;
+        bool m_isPlayer;
         std::vector<std::unique_ptr<Component>> components;
 
         ComponentArray componentArray;
@@ -73,6 +74,7 @@ class Entity
             return groupBitset[mGroup];
         }
         void addGroup(Group mGroup);
+        bool isPlayer() const { return m_isPlayer; }
         void delGroup(Group mGroup)
         {
             groupBitset[mGroup] = false;
