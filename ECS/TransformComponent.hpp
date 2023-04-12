@@ -6,7 +6,6 @@ class TransformComponent : public Component
     public:
         Vector2D position;
         Vector2D velocity;
-
         int height = 49;
         int width = 32;
         int scale = 1;
@@ -44,5 +43,8 @@ class TransformComponent : public Component
         }
         void update() override
         {
+            position.x += velocity.x * speed;
+            position.y += velocity.y * speed;
+            
         }
 };

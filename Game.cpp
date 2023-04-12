@@ -14,8 +14,6 @@ auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
 
-int playerLives = 3;
-
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
@@ -69,7 +67,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("background","assets/bg.png");
     assets->AddFont("visby", "assets/visby.ttf", 16);
 
-    Player.addComponent<PlayerComponent>(Vector2D{285, 525}, 3.0f, 3);
+    Player.addComponent<TransformComponent>(285,500,49,32,1);
     Player.addComponent<SpriteComponent>("player", true);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
@@ -134,12 +132,28 @@ void Game::handleEvent()
 
 void Game::update() {
 	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
-    int i = playerLives;
+    int i = 727;
     std::stringstream ss;
     ss << i;
     label.getComponent<UILabel>().SetLabelText(ss.str(),"visby");
 	manager.refresh();
     manager.update();
+    if (playerPos.x < 36)
+    {
+        Player.getComponent<TransformComponent>().position.x = 36;
+    }
+    else if (playerPos.x + 37 > 530)
+    {
+        Player.getComponent<TransformComponent>().position.x = 530 - 37;
+    }
+    if (playerPos.y < 18)
+    {
+        Player.getComponent<TransformComponent>().position.y = 18;
+    }
+    else if (playerPos.y + 19 > 555)
+    {
+        Player.getComponent<TransformComponent>().position.y = 555 - 19;
+    }
     for (auto& b : bullets)
     {
         b->getComponent<BulletComponent>().update();
@@ -185,5 +199,3 @@ void Game::clean()
     SDL_Quit();
     std::cout << "cweaned!" << std::endl;
 }
-
-//
