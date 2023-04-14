@@ -20,6 +20,7 @@ SDL_Event Game::event;
 
 std::vector<ColliderComponent*> Game::colliders;
 
+
 Game::Game()
 {
 }
@@ -150,9 +151,9 @@ void Game::update() {
     {
         Player.getComponent<TransformComponent>().position.y = 18;
     }
-    else if (playerPos.y + 19 > 555)
+    else if (playerPos.y + 19 > 553)
     {
-        Player.getComponent<TransformComponent>().position.y = 555 - 19;
+        Player.getComponent<TransformComponent>().position.y = 553 - 19;
     }
     for (auto& b : bullets)
     {

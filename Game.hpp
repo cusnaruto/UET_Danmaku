@@ -8,7 +8,6 @@
 
 class ColliderComponent;
 class AssetManager;
-
 class Game {
 
 public:
