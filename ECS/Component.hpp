@@ -6,3 +6,4 @@
 #include "CollideComponent.hpp"
 #include "BulletComponent.hpp"
 #include "UILabel.hpp"
+#include "EnemyComponent.hpp"

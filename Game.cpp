@@ -20,7 +20,6 @@ SDL_Event Game::event;
 
 std::vector<ColliderComponent*> Game::colliders;
 
-
 Game::Game()
 {
 }
@@ -62,7 +61,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     }
 
     assets->AddTexture("mybullet", "assets/playerbullet.png");
-    assets->AddTexture("enemy", "assets/dekafumo.jpg");
+    assets->AddTexture("enemy", "assets/fairy.png");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/bg.png");
@@ -79,12 +78,12 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
     assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"mybullet");
     assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"mybullet");
-    bullet.addComponent<TransformComponent>(NULL,NULL,21,23,1);
+    bullet.addComponent<TransformComponent>(NULL,NULL,23,21,1);
     bullet.addComponent<SpriteComponent>("bullet",true);
     bullet.addComponent<ColliderComponent>("mybullet");
     bullet.addGroup(groupEnemies);
     
-    Enemy.addComponent<TransformComponent>(285.0f,200.0f,200,200,1);
+    Enemy.addComponent<TransformComponent>(285.0f,200.0f,27,23,2);
     Enemy.addComponent<SpriteComponent>("enemy",false);
     Enemy.addComponent<ColliderComponent>("enemy");
     Enemy.addGroup(groupEnemies);
@@ -106,6 +105,14 @@ void Game::spawnBullet()
     Vector2D player = Player.getComponent<TransformComponent>().position;
     assets->CreateBullet(Vector2D(player.x+6,player.y-15), Vector2D(0,-4),1000, 2,"mybullet");
 }
+
+void Game::spawnEnemy() {
+    Enemy.addComponent<TransformComponent>(235.0f,200.0f,21,23,2);
+    Enemy.addComponent<EnemyComponent>(27, 23,2, 5, Vector2D(1,1));
+    Enemy.addComponent<SpriteComponent>("enemy",false);
+    Enemy.addComponent<ColliderComponent>("enemy");
+    Enemy.addGroup(groupEnemies);
+}
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& bullets(manager.getGroup(Game::groupBullets));
@@ -126,6 +133,11 @@ void Game::handleEvent()
         if (event.key.keysym.sym == SDLK_z)
         {
             spawnBullet();                                    
+        }
+        if (event.key.keysym.sym == SDLK_k)
+        {
+            spawnEnemy();   
+            std::cout << "Enemy sawnded" << std::endl;                                 
         }
         break;
     }
@@ -151,9 +163,9 @@ void Game::update() {
     {
         Player.getComponent<TransformComponent>().position.y = 18;
     }
-    else if (playerPos.y + 19 > 553)
+    else if (playerPos.y + 19 > 555)
     {
-        Player.getComponent<TransformComponent>().position.y = 553 - 19;
+        Player.getComponent<TransformComponent>().position.y = 555 - 19;
     }
     for (auto& b : bullets)
     {
@@ -162,10 +174,6 @@ void Game::update() {
         {
             b->destroy();
             std::cout << "hit enemies" << std::endl;
-        }
-        if (b->getComponent<TransformComponent>().height <= 20)
-        {
-            b->destroy();
         }
     }
 }
@@ -176,7 +184,6 @@ void Game::render()
 {
     SDL_RenderClear(renderer);
     Background.draw();
-    Layout.draw();
     for (auto& p : players)
     {
         p->draw();
@@ -189,6 +196,7 @@ void Game::render()
     {
         b->getComponent<SpriteComponent>().draw();
     }
+    Layout.draw();
     label.draw();
     SDL_RenderPresent(renderer);
 }

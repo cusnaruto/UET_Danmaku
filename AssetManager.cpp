@@ -6,7 +6,6 @@ AssetManager::AssetManager(Manager* man) : manager(man)
 }
 AssetManager::~AssetManager()
 {
-
 }
 
 void AssetManager::CreateBullet(Vector2D pos,Vector2D vel, int range, int speed, std::string id)

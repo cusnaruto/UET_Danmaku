@@ -15,12 +15,12 @@ public:
         ~Game();
         
         void init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen);
-        
         void handleEvent();
         void update();
         void render();
         void clean();
         void spawnBullet();
+        void spawnEnemy();
         bool running()
         {
             return isRunning;
