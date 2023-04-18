@@ -3,6 +3,7 @@
 #include "ECS.hpp"
 #include "Component.hpp"
 #include "../Vector2D.hpp"
+
 class BulletComponent : public Component
 {
     public:
@@ -31,11 +32,10 @@ class BulletComponent : public Component
                 entity->destroy();
             }
         }
+        void collide();
 
     private:
-
     TransformComponent* transform;
-    
     int range = 0;
     int speed = 0;
     int distance = 0;

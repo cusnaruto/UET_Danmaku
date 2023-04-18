@@ -2,6 +2,7 @@
 #define Game_hpp
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <vector>
 
@@ -21,10 +22,12 @@ public:
         void clean();
         void spawnBullet();
         void spawnEnemy();
+        void spawnEnemyBullet();
         bool running()
         {
             return isRunning;
         }
+        static float deltaTime;
         static SDL_Renderer *renderer;
         static SDL_Event event;
         static std::vector<ColliderComponent*> colliders;
@@ -36,9 +39,11 @@ public:
                 groupEnemies,
                 groupColliders,
                 groupLayouts,
+                groupEnemyBullets
         };
 private:
         bool isRunning;
         SDL_Window* window; 
 };
+
 #endif /* Game_hpp */

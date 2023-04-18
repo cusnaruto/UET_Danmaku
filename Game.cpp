@@ -4,9 +4,17 @@
 #include "Vector2D.hpp"
 #include "Collision.hpp"
 #include "AssetManager.hpp"
+#include "EnemyComponent.hpp"
 #include <sstream>
 
 Manager manager;
+
+AssetManager* Game::assets = new AssetManager(&manager);
+SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
+
+Mix_Music *gMusic = NULL;
+
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
 auto& bullet(manager.addEntity());
@@ -14,11 +22,9 @@ auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
 
-AssetManager* Game::assets = new AssetManager(&manager);
-SDL_Renderer* Game::renderer = nullptr;
-SDL_Event Game::event;
 
 std::vector<ColliderComponent*> Game::colliders;
+
 
 Game::Game()
 {
@@ -54,7 +60,16 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     } else {
         isRunning = false;
     }
-
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+        {
+            printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+            isRunning = false;
+        }
+        gMusic = Mix_LoadMUS( "assets/stagebgm.mp3" );
+        if( Mix_PlayingMusic() == 0 )
+            {
+                Mix_PlayMusic( gMusic, -1 );
+            }
     if (TTF_Init() == -1)
     {
         std::cout << "font error" << std::endl;
@@ -81,11 +96,12 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     bullet.addComponent<TransformComponent>(NULL,NULL,23,21,1);
     bullet.addComponent<SpriteComponent>("bullet",true);
     bullet.addComponent<ColliderComponent>("mybullet");
-    bullet.addGroup(groupEnemies);
+    bullet.addGroup(groupBullets);
     
-    Enemy.addComponent<TransformComponent>(285.0f,200.0f,27,23,2);
+    Enemy.addComponent<TransformComponent>(285.0f,200.0f,29,23,2);
     Enemy.addComponent<SpriteComponent>("enemy",false);
     Enemy.addComponent<ColliderComponent>("enemy");
+    Enemy.addComponent<EnemyComponent>(0,50,Vector2D(0,0));
     Enemy.addGroup(groupEnemies);
 
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
@@ -105,13 +121,13 @@ void Game::spawnBullet()
     Vector2D player = Player.getComponent<TransformComponent>().position;
     assets->CreateBullet(Vector2D(player.x+6,player.y-15), Vector2D(0,-4),1000, 2,"mybullet");
 }
-
+float xPos = 250;
 void Game::spawnEnemy() {
-    Enemy.addComponent<TransformComponent>(235.0f,200.0f,21,23,2);
-    Enemy.addComponent<EnemyComponent>(27, 23,2, 5, Vector2D(1,1));
+    Enemy.addComponent<TransformComponent>(xPos,200.0f,29,23,2);
     Enemy.addComponent<SpriteComponent>("enemy",false);
     Enemy.addComponent<ColliderComponent>("enemy");
     Enemy.addGroup(groupEnemies);
+    xPos += 30;
 }
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
@@ -139,18 +155,27 @@ void Game::handleEvent()
             spawnEnemy();   
             std::cout << "Enemy sawnded" << std::endl;                                 
         }
+        if (event.key.keysym.sym == SDLK_p)
+        {
+        while (SDL_GetKeyboardState(NULL)[SDLK_p] == SDL_PRESSED ) {
+	    SDL_Delay(100);
+	    SDL_PumpEvents();
+        }
+            }
         break;
     }
 }
 
 void Game::update() {
+		SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
 	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
-    int i = 727;
-    std::stringstream ss;
-    ss << i;
-    label.getComponent<UILabel>().SetLabelText(ss.str(),"visby");
+
+	std::stringstream ss;
+	ss << "Player position: " << playerPos;
+	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
+
 	manager.refresh();
-    manager.update();
+	manager.update();
     if (playerPos.x < 36)
     {
         Player.getComponent<TransformComponent>().position.x = 36;
@@ -167,13 +192,16 @@ void Game::update() {
     {
         Player.getComponent<TransformComponent>().position.y = 555 - 19;
     }
-    for (auto& b : bullets)
+	for (auto& e : enemies)
     {
-        b->getComponent<BulletComponent>().update();
-        if(Collision::AABB(Enemy.getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider))
-        {
+    for (auto& b : bullets)
+	    {
+		    if (Collision::AABB(Enemy.getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider))
+		    {
+			std::cout << "Hit enemy!" << std::endl;
             b->destroy();
-            std::cout << "hit enemies" << std::endl;
+            e->getComponent<EnemyComponent>().hitByBullet();
+		    }
         }
     }
 }
@@ -205,6 +233,9 @@ void Game::clean()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    Mix_FreeMusic( gMusic );
+    gMusic = NULL;
+    Mix_Quit();
     SDL_Quit();
     std::cout << "cweaned!" << std::endl;
 }
