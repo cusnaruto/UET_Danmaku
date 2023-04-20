@@ -27,5 +27,6 @@ class EnemyComponent : public Component
         SpriteComponent *sprite;
         int health;
         int speed;
+        std::string tag;
         Vector2D velocity;
 };

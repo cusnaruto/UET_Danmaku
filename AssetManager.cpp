@@ -36,3 +36,13 @@ TTF_Font* AssetManager::GetFont(std::string id)
 {
     return fonts[id];
 }
+
+void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id)
+{
+    auto& collider(manager->addEntity());
+    collider.addComponent<TransformComponent>(pos.x,pos.y,width,height,1);
+    collider.addComponent<SpriteComponent>(id,false);
+    collider.addComponent<ColliderComponent>("enemy");
+    collider.addComponent<EnemyComponent>(1,50,Vector2D(0,0));
+    collider.addGroup(Game::groupEnemies);
+}

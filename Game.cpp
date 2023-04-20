@@ -24,7 +24,7 @@ auto& label(manager.addEntity());
 
 
 std::vector<ColliderComponent*> Game::colliders;
-
+std::vector<Entity*> Enemies;
 
 Game::Game()
 {
@@ -103,6 +103,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Enemy.addComponent<ColliderComponent>("enemy");
     Enemy.addComponent<EnemyComponent>(0,50,Vector2D(0,0));
     Enemy.addGroup(groupEnemies);
+    
 
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
     Layout.addComponent<SpriteComponent>("layout",false);
@@ -113,8 +114,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Background.addComponent<SpriteComponent>("background",false);
     Background.addComponent<ColliderComponent>("background");
     Background.addGroup(groupLayouts);
-
-}
+    
+    assets->createEnemy(Vector2D(50, 50), 29, 23, "enemy");
+    assets->createEnemy(Vector2D(100, 100), 29, 23, "enemy");
+    assets->createEnemy(Vector2D(150, 150), 29, 23, "enemy");
+}   
 
 void Game::spawnBullet()
 {
@@ -155,56 +159,48 @@ void Game::handleEvent()
             spawnEnemy();   
             std::cout << "Enemy sawnded" << std::endl;                                 
         }
-        if (event.key.keysym.sym == SDLK_p)
-        {
-        while (SDL_GetKeyboardState(NULL)[SDLK_p] == SDL_PRESSED ) {
-	    SDL_Delay(100);
-	    SDL_PumpEvents();
-        }
-            }
         break;
     }
 }
 
 void Game::update() {
-		SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
-	Vector2D playerPos = Player.getComponent<TransformComponent>().position;
+    SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
+    Vector2D playerPos = Player.getComponent<TransformComponent>().position;
 
-	std::stringstream ss;
-	ss << "Player position: " << playerPos;
-	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
+    std::stringstream ss;
+    ss << "Player position: " << playerPos;
+    label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
 
-	manager.refresh();
-	manager.update();
-    if (playerPos.x < 36)
-    {
-        Player.getComponent<TransformComponent>().position.x = 36;
+    manager.refresh();
+    manager.update();
+
+    std::vector<Entity*> Enemies;
+    for (auto& entity : manager.getGroup(Game::groupEnemies)) {
+        Enemies.emplace_back(entity);
     }
-    else if (playerPos.x + 37 > 530)
-    {
-        Player.getComponent<TransformComponent>().position.x = 530 - 37;
-    }
-    if (playerPos.y < 18)
-    {
-        Player.getComponent<TransformComponent>().position.y = 18;
-    }
-    else if (playerPos.y + 19 > 555)
-    {
-        Player.getComponent<TransformComponent>().position.y = 555 - 19;
-    }
-	for (auto& e : enemies)
-    {
-    for (auto& b : bullets)
-	    {
-		    if (Collision::AABB(Enemy.getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider))
-		    {
-			std::cout << "Hit enemy!" << std::endl;
-            b->destroy();
-            e->getComponent<EnemyComponent>().hitByBullet();
-		    }
+
+    for (auto& b : bullets) {
+        for (auto& enemy : Enemies) {
+            if (Collision::AABB(enemy->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
+                std::cout << "Hit enemy!" << std::endl;
+                b->destroy();
+                enemy->getComponent<EnemyComponent>().hitByBullet();
+            }
         }
     }
+
+    if (playerPos.x < 36) {
+        Player.getComponent<TransformComponent>().position.x = 36;
+    } else if (playerPos.x + 37 > 530) {
+        Player.getComponent<TransformComponent>().position.x = 530 - 37;
+    }
+    if (playerPos.y < 18) {
+        Player.getComponent<TransformComponent>().position.y = 18;
+    } else if (playerPos.y + 19 > 555) {
+        Player.getComponent<TransformComponent>().position.y = 555 - 19;
+    }
 }
+
 
 
 
