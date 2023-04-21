@@ -3,6 +3,7 @@
 #include "ECS.hpp"
 #include "Component.hpp"
 #include "../Vector2D.hpp"
+#include <string>
 
 class BulletComponent : public Component
 {

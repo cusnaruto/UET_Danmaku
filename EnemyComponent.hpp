@@ -5,6 +5,7 @@
 #include "Vector2D.hpp"
 #include "Collision.hpp"
 
+
 class EnemyComponent : public Component
 {
     public:

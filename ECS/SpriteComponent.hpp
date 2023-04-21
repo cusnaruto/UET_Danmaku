@@ -5,6 +5,7 @@
 #include "../TextureManager.hpp"
 #include "Animation.hpp"
 #include <map>
+#include <unordered_map>
 #include "../AssetManager.hpp"
 
 class SpriteComponent : public Component
@@ -13,6 +14,7 @@ class SpriteComponent : public Component
         TransformComponent *transform;
         SDL_Texture *texture;
         SDL_Rect srcRect, destRect;
+        std::unordered_map<std::string, std::shared_ptr<Animation>> Animations;
         bool animated = false;
         int frames = 0;
         int speed = 100;

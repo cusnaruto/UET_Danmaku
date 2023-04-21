@@ -37,12 +37,22 @@ TTF_Font* AssetManager::GetFont(std::string id)
     return fonts[id];
 }
 
-void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id)
+void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id, std::string spriteId)
 {
-    auto& collider(manager->addEntity());
-    collider.addComponent<TransformComponent>(pos.x,pos.y,width,height,1);
-    collider.addComponent<SpriteComponent>(id,false);
-    collider.addComponent<ColliderComponent>("enemy");
-    collider.addComponent<EnemyComponent>(1,50,Vector2D(0,0));
-    collider.addGroup(Game::groupEnemies);
+    auto& enemy(manager->addEntity());
+    enemy.addComponent<TransformComponent>(pos.x, pos.y, width, height, 1);
+    enemy.addComponent<SpriteComponent>(spriteId, false);
+    enemy.addComponent<ColliderComponent>("enemy");
+    enemy.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0));
+    enemy.addGroup(Game::groupEnemies);
+}
+
+void AssetManager::CreateEnemyBullet(Vector2D pos,Vector2D vel, int range, int speed, std::string id)
+{
+    auto& bullet(manager->addEntity());
+    bullet.addComponent<TransformComponent>(pos.x, pos.y,29,24,1);
+    bullet.addComponent<SpriteComponent>(id,false);
+    bullet.addComponent<BulletComponent>(range, speed, vel);
+    bullet.addComponent<ColliderComponent>("bullet");
+    bullet.addGroup(Game::groupEnemyBullets);
 }

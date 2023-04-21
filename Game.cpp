@@ -21,11 +21,14 @@ auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
-
+auto& enemyBullet(manager.addEntity());
 
 std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
 
+Uint32 timeNow = SDL_GetTicks();
+Uint32 fireRate = 1000;
+Uint32 lastFireTime = 0;
 Game::Game()
 {
 }
@@ -77,6 +80,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
     assets->AddTexture("mybullet", "assets/playerbullet.png");
     assets->AddTexture("enemy", "assets/fairy.png");
+    assets->AddTexture("enemyBullet", "assets/redbullet.png");
+    assets->AddTexture("enemy1", "assets/mob2.png");
+    assets->AddTexture("enemy2", "assets/mob3.png");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/bg.png");
@@ -104,6 +110,10 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Enemy.addComponent<EnemyComponent>(0,50,Vector2D(0,0));
     Enemy.addGroup(groupEnemies);
     
+    enemyBullet.addComponent<TransformComponent>(NULL,NULL,31,27,1);
+    enemyBullet.addComponent<SpriteComponent>("enemyBullet",false);
+    enemyBullet.addComponent<ColliderComponent>("enemybullet");
+    enemyBullet.addGroup(groupEnemyBullets);
 
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
     Layout.addComponent<SpriteComponent>("layout",false);
@@ -115,9 +125,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Background.addComponent<ColliderComponent>("background");
     Background.addGroup(groupLayouts);
     
-    assets->createEnemy(Vector2D(50, 50), 29, 23, "enemy");
-    assets->createEnemy(Vector2D(100, 100), 29, 23, "enemy");
-    assets->createEnemy(Vector2D(150, 150), 29, 23, "enemy");
+    assets->createEnemy(Vector2D(50, 50), 29, 23, "enemy","enemy");
+    assets->createEnemy(Vector2D(100, 100), 29, 23, "enemy1","enemy1");
+    assets->createEnemy(Vector2D(150, 150), 29, 23, "enemy2","enemy2");
 }   
 
 void Game::spawnBullet()
@@ -125,19 +135,11 @@ void Game::spawnBullet()
     Vector2D player = Player.getComponent<TransformComponent>().position;
     assets->CreateBullet(Vector2D(player.x+6,player.y-15), Vector2D(0,-4),1000, 2,"mybullet");
 }
-float xPos = 250;
-void Game::spawnEnemy() {
-    Enemy.addComponent<TransformComponent>(xPos,200.0f,29,23,2);
-    Enemy.addComponent<SpriteComponent>("enemy",false);
-    Enemy.addComponent<ColliderComponent>("enemy");
-    Enemy.addGroup(groupEnemies);
-    xPos += 30;
-}
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& bullets(manager.getGroup(Game::groupBullets));
 auto& enemies(manager.getGroup(Game::groupEnemies));
-
+auto& enemybullets(manager.getGroup(Game::groupEnemyBullets));
 
 void Game::handleEvent()
 {
@@ -154,11 +156,6 @@ void Game::handleEvent()
         {
             spawnBullet();                                    
         }
-        if (event.key.keysym.sym == SDLK_k)
-        {
-            spawnEnemy();   
-            std::cout << "Enemy sawnded" << std::endl;                                 
-        }
         break;
     }
 }
@@ -174,13 +171,18 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
-    std::vector<Entity*> Enemies;
-    for (auto& entity : manager.getGroup(Game::groupEnemies)) {
-        Enemies.emplace_back(entity);
-    }
-
-    for (auto& b : bullets) {
-        for (auto& enemy : Enemies) {
+    std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
+    for (auto& enemy : Enemies) {
+        if (SDL_GetTicks() - lastFireTime >= fireRate){
+    auto& transform = enemy->getComponent<TransformComponent>();
+    Vector2D bulletPos(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
+    assets->CreateEnemyBullet(bulletPos, Vector2D(0, 1),1000,2, "enemyBullet");
+    std::cout << "bullet fired" << std::endl;
+    lastFireTime = SDL_GetTicks();
+            }
+        }
+    for (auto& enemy : Enemies) {
+        for (auto& b : bullets) {
             if (Collision::AABB(enemy->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
                 std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
@@ -188,7 +190,13 @@ void Game::update() {
             }
         }
     }
-
+    for (auto& eb : enemybullets)
+    {
+        if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, eb->getComponent<ColliderComponent>().collider)) {
+                std::cout << "Hit player!" << std::endl;
+                eb->destroy();
+            }
+        }
     if (playerPos.x < 36) {
         Player.getComponent<TransformComponent>().position.x = 36;
     } else if (playerPos.x + 37 > 530) {
@@ -219,6 +227,10 @@ void Game::render()
     for (auto& b : bullets)
     {
         b->getComponent<SpriteComponent>().draw();
+    }
+    for (auto& eb : enemybullets)
+    {
+        eb->getComponent<SpriteComponent>().draw();
     }
     Layout.draw();
     label.draw();

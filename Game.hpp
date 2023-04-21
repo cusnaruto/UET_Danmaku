@@ -21,7 +21,6 @@ public:
         void render();
         void clean();
         void spawnBullet();
-        void spawnEnemy();
         void spawnEnemyBullet();
         bool running()
         {
