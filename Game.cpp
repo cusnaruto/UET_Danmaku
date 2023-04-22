@@ -6,14 +6,16 @@
 #include "AssetManager.hpp"
 #include "EnemyComponent.hpp"
 #include <sstream>
+#include <cstdlib>
+#include <ctime>
 
 Manager manager;
 
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
-
 Mix_Music *gMusic = NULL;
+Mix_Music *bgmMusic = NULL;
 
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
@@ -27,7 +29,7 @@ std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
 
 Uint32 timeNow = SDL_GetTicks();
-Uint32 fireRate = 1000;
+Uint32 fireRate = 2000;
 Uint32 lastFireTime = 0;
 Game::Game()
 {
@@ -59,6 +61,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
             SDL_SetRenderDrawColor(renderer,255,255,255,255);
             std::cout << "renderer created! :3" << std::endl;
         }
+        MainMenu mainMenu;
+        mainMenu.show(*this);
         isRunning = true;
     } else {
         isRunning = false;
@@ -80,7 +84,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
     assets->AddTexture("mybullet", "assets/playerbullet.png");
     assets->AddTexture("enemy", "assets/fairy.png");
-    assets->AddTexture("enemyBullet", "assets/redbullet.png");
+    assets->AddTexture("enemyBullet", "assets/red2.png");
     assets->AddTexture("enemy1", "assets/mob2.png");
     assets->AddTexture("enemy2", "assets/mob3.png");
     assets->AddTexture("player", "assets/reimu.png");
@@ -95,7 +99,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Player.addGroup(groupPlayers);
 
     SDL_Color white = {255,255,255,255};
-    label.addComponent<UILabel>(630,135, "727 wysi", "visby", white);
+    label.addComponent<UILabel>(618,95, "727 wysi", "visby", white);
 
     assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"mybullet");
     assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"mybullet");
@@ -110,7 +114,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Enemy.addComponent<EnemyComponent>(0,50,Vector2D(0,0));
     Enemy.addGroup(groupEnemies);
     
-    enemyBullet.addComponent<TransformComponent>(NULL,NULL,31,27,1);
+    enemyBullet.addComponent<TransformComponent>(NULL,NULL,12,12,1);
     enemyBullet.addComponent<SpriteComponent>("enemyBullet",false);
     enemyBullet.addComponent<ColliderComponent>("enemybullet");
     enemyBullet.addGroup(groupEnemyBullets);
@@ -163,23 +167,23 @@ void Game::handleEvent()
 void Game::update() {
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
-
+    srand(time(NULL));
     std::stringstream ss;
     ss << "Player position: " << playerPos;
-    label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
+    label.getComponent<UILabel>().SetLabelText(ss.str(), "visby");
 
     manager.refresh();
     manager.update();
 
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
+    if (SDL_GetTicks() - lastFireTime >= fireRate){
     for (auto& enemy : Enemies) {
-        if (SDL_GetTicks() - lastFireTime >= fireRate){
     auto& transform = enemy->getComponent<TransformComponent>();
     Vector2D bulletPos(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
     assets->CreateEnemyBullet(bulletPos, Vector2D(0, 1),1000,2, "enemyBullet");
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
-            }
+            }   
         }
     for (auto& enemy : Enemies) {
         for (auto& b : bullets) {

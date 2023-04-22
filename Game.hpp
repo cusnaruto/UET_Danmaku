@@ -5,6 +5,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <vector>
+#include "MainMenu.hpp"
 
 
 class ColliderComponent;
