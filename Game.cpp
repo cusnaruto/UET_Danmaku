@@ -32,6 +32,8 @@ Uint32 timeNow = SDL_GetTicks();
 float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
 Uint32 lastFireTime = 0;
+Uint32 invulnerableTime = 0;
+int playerLives = 99;
 Game::Game()
 {
 }
@@ -150,6 +152,15 @@ void Game::quit() {
     isRunning = false;
 }
 
+void Game::respawnPlayer() {
+    if (playerLives > 0) {
+        --playerLives;
+        Player.getComponent<TransformComponent>().position = Vector2D(283, 500); // set the default position
+        invulnerableTime = SDL_GetTicks() + 2000; // make the player invulnerable for 2 seconds
+    } else {
+        // handle game over
+    }
+}
 void Game::handleEvent()
 {
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
@@ -186,8 +197,7 @@ void Game::update() {
     auto& transform = enemy->getComponent<TransformComponent>();
     Vector2D bulletPos(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
     assets->CreateEnemyBullet(bulletPos, Vector2D(0, 1),1000,2, "enemyBullet");
-    std::cout << "Creating flower pattern" << std::endl;
-    assets->CreateFlowerPattern(bulletPos,2,10,1000,2,"enemyBullet");
+    assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
             }   
@@ -204,10 +214,14 @@ void Game::update() {
     for (auto& eb : enemybullets)
     {
         if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, eb->getComponent<ColliderComponent>().collider)) {
+                if (SDL_GetTicks() > invulnerableTime) {
                 std::cout << "Hit player!" << std::endl;
                 eb->destroy();
-            }
+                respawnPlayer();
+                std::cout << playerLives << std::endl;
+                }
         }
+    }
     if (playerPos.x < 36) {
         Player.getComponent<TransformComponent>().position.x = 36;
     } else if (playerPos.x + 37 > 530) {

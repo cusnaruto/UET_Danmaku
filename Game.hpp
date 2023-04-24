@@ -23,6 +23,7 @@ public:
         void clean();
         void spawnBullet();
         void spawnEnemyBullet();
+        void respawnPlayer();
         void quit();
         bool running()
         {
