@@ -109,6 +109,7 @@ class Manager
     private:
         std::vector<std::unique_ptr<Entity>> entities;
         std::array<std::vector<Entity*>, maxGroups> groupedEntities;
+        std::vector<std::unique_ptr<Component>> components;
     public:
         void update()
         {
@@ -155,4 +156,8 @@ class Manager
             entities.emplace_back(std::move(uPtr));
             return *e;
         }
+        template<typename T>
+        void addComponent(T* component) {
+        components.emplace_back(component);
+    }
 };

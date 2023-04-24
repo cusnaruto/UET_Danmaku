@@ -56,3 +56,27 @@ void AssetManager::CreateEnemyBullet(Vector2D pos,Vector2D vel, int range, int s
     bullet.addComponent<ColliderComponent>("bullet");
     bullet.addGroup(Game::groupEnemyBullets);
 }
+
+
+void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletCount, int range, int bulletSpeed, std::string id)
+{
+    int radius = 20;
+    int speed = 3;
+    float angleStep = 2 * M_PI / petalCount;
+
+    for (int i = 0; i < petalCount; ++i) {
+        float angle = i * angleStep;
+
+        for (int j = 0; j < bulletCount; ++j) {
+            float bulletAngle = j * (2 * M_PI / bulletCount);
+            float dx = radius * cos(bulletAngle);
+            float dy = radius * sin(bulletAngle);
+
+            auto& bullet(manager->addEntity());
+            bullet.addComponent<TransformComponent>(pos.x + dx, pos.y + dy, 10, 10, 1);
+            bullet.addComponent<SpriteComponent>(id);
+            bullet.addComponent<BulletComponent>(range, bulletSpeed, Vector2D(speed * cos(angle), speed * sin(angle)));
+            bullet.addComponent<ColliderComponent>("enemybullet");
+        }
+    }
+}

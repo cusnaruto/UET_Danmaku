@@ -27,8 +27,9 @@ void EnemyComponent::update()
     {
         transform->position.x = 535;
         transform->velocity.y *= -1;
-    }  
+    }
 }
+
 
 void EnemyComponent::hitByBullet() {
     health--;

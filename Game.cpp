@@ -29,6 +29,7 @@ std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
 
 Uint32 timeNow = SDL_GetTicks();
+float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
 Uint32 lastFireTime = 0;
 Game::Game()
@@ -145,6 +146,10 @@ auto& bullets(manager.getGroup(Game::groupBullets));
 auto& enemies(manager.getGroup(Game::groupEnemies));
 auto& enemybullets(manager.getGroup(Game::groupEnemyBullets));
 
+void Game::quit() {
+    isRunning = false;
+}
+
 void Game::handleEvent()
 {
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
@@ -174,13 +179,15 @@ void Game::update() {
 
     manager.refresh();
     manager.update();
-
+    deltaTime = SDL_GetTicks();
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
     if (SDL_GetTicks() - lastFireTime >= fireRate){
     for (auto& enemy : Enemies) {
     auto& transform = enemy->getComponent<TransformComponent>();
     Vector2D bulletPos(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
     assets->CreateEnemyBullet(bulletPos, Vector2D(0, 1),1000,2, "enemyBullet");
+    std::cout << "Creating flower pattern" << std::endl;
+    assets->CreateFlowerPattern(bulletPos,2,10,1000,2,"enemyBullet");
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
             }   

@@ -6,6 +6,7 @@
 #include "TextureManager.hpp"
 #include "Vector2D.hpp"
 #include "ECS/ECS.hpp"
+#include <cmath>
 
 #include "SDL2/SDL_ttf.h"
 
@@ -26,6 +27,7 @@ class AssetManager
         void AddFont(std::string id,std::string path,int fontSize);
         TTF_Font* GetFont(std::string id);
         void createEnemy(Vector2D pos, int width, int height, std::string id, std::string spriteId);
+        void CreateFlowerPattern(Vector2D pos, int petalCount, int bulletCount, int range, int bulletSpeed, std::string id);
     private:
         Manager* manager;
         std::map<std::string, SDL_Texture*> textures;

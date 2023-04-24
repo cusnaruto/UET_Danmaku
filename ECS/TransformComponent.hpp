@@ -47,4 +47,8 @@ class TransformComponent : public Component
             position.y += velocity.y * speed;
             
         }
+            void setPosition(int x, int y) {
+            position.x = x;
+            position.y = y;
+        }
 };

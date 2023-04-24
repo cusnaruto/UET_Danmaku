@@ -4,8 +4,7 @@
 #include "ECS/ECS.hpp"
 #include "Vector2D.hpp"
 #include "Collision.hpp"
-
-
+#include <SDL2/SDL.h>
 class EnemyComponent : public Component
 {
     public:
@@ -22,12 +21,15 @@ class EnemyComponent : public Component
         void update() override;
         int getHealth() const { return health; }
         void hitByBullet();
+        
     private:
-        Manager manager;
         TransformComponent* transform;
         SpriteComponent *sprite;
+        Manager* manager;
         int health;
         int speed;
         std::string tag;
         Vector2D velocity;
+
+
 };

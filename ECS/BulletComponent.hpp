@@ -8,6 +8,7 @@
 class BulletComponent : public Component
 {
     public:
+        BulletComponent() : range(0), speed(0), distance(0), velocity(0, 0) {}
         BulletComponent(int rng, int spd, Vector2D vel) : range(rng), speed(spd), velocity(vel)
         {}
         ~BulletComponent()
@@ -33,12 +34,18 @@ class BulletComponent : public Component
                 entity->destroy();
             }
         }
-        void collide();
 
+
+    void setVelocity(int vx, int vy) {
+    transform->velocity.x = vx;
+    transform->velocity.y = vy;
+    }
+
+    Vector2D velocity;
     private:
     TransformComponent* transform;
     int range = 0;
     int speed = 0;
     int distance = 0;
-    Vector2D velocity;
+    
 };
