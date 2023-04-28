@@ -2,6 +2,12 @@
 #include "TextureManager.hpp"
 #include <SDL2/SDL_mixer.h>
 
+MainMenu::MainMenu()
+{}
+
+MainMenu::~MainMenu()
+{}
+
 void MainMenu::show(Game& game) {
     // Load the menu background image
     SDL_Texture* menuTexture = TextureManager::LoadTexture("assets/mainmenu.png");

@@ -14,8 +14,11 @@ Manager manager;
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
+
 Mix_Music *gMusic = NULL;
 Mix_Music *bgmMusic = NULL;
+Mix_Chunk *playerDie = NULL;
+Mix_Chunk *shoot = NULL;
 
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
@@ -78,8 +81,21 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         gMusic = Mix_LoadMUS( "assets/stagebgm.mp3" );
         if( Mix_PlayingMusic() == 0 )
             {
-                Mix_PlayMusic( gMusic, -1 );
+                Mix_PlayMusic( gMusic, 1 );
             }
+        playerDie = Mix_LoadWAV( "assets/playerdie.mp3" );
+	    if( playerDie == NULL )
+	    {
+		printf( "Failed to load scratch sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+		isRunning = false;
+	    }   
+        shoot = Mix_LoadWAV( "assets/damage00.wav" );
+	    if( shoot == NULL )
+	    {
+		printf( "Failed to load scratch sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+		isRunning = false;
+	    }
+	    
     if (TTF_Init() == -1)
     {
         std::cout << "font error" << std::endl;
@@ -92,7 +108,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("enemy2", "assets/mob3.png");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
-    assets->AddTexture("background","assets/bg.png");
+    assets->AddTexture("background","assets/temp.jpg");
     assets->AddFont("visby", "assets/visby.ttf", 16);
 
     Player.addComponent<TransformComponent>(285,500,49,32,1);
@@ -156,7 +172,7 @@ void Game::respawnPlayer() {
     if (playerLives > 0) {
         --playerLives;
         Player.getComponent<TransformComponent>().position = Vector2D(283, 500); // set the default position
-        invulnerableTime = SDL_GetTicks() + 2000; // make the player invulnerable for 2 seconds
+        invulnerableTime = SDL_GetTicks() + 4000; // make the player invulnerable for 2 seconds
     } else {
         // handle game over
     }
@@ -174,7 +190,8 @@ void Game::handleEvent()
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_z)
         {
-            spawnBullet();                                    
+            spawnBullet();
+            Mix_PlayChannel(-1,shoot,0); 
         }
         break;
     }
@@ -197,7 +214,7 @@ void Game::update() {
     auto& transform = enemy->getComponent<TransformComponent>();
     Vector2D bulletPos(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
     assets->CreateEnemyBullet(bulletPos, Vector2D(0, 1),1000,2, "enemyBullet");
-    assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
+    // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
             }   
@@ -216,6 +233,7 @@ void Game::update() {
         if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, eb->getComponent<ColliderComponent>().collider)) {
                 if (SDL_GetTicks() > invulnerableTime) {
                 std::cout << "Hit player!" << std::endl;
+                Mix_PlayChannel(-1,playerDie,0);
                 eb->destroy();
                 respawnPlayer();
                 std::cout << playerLives << std::endl;
@@ -266,8 +284,12 @@ void Game::clean()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    Mix_FreeMusic( gMusic );
+    Mix_FreeMusic(gMusic);
+    Mix_FreeChunk(playerDie);
+    Mix_FreeChunk(shoot);
+    playerDie = NULL;
     gMusic = NULL;
+    shoot = NULL;
     Mix_Quit();
     SDL_Quit();
     std::cout << "cweaned!" << std::endl;

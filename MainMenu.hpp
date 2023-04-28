@@ -4,5 +4,7 @@
 class Game;
 class MainMenu {
 public:
+    MainMenu();
+    ~MainMenu();
     void show(Game& game);
 };
