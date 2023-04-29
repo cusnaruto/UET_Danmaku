@@ -26,7 +26,7 @@ class AssetManager
         SDL_Texture* getTexture(std::string id);
         void AddFont(std::string id,std::string path,int fontSize);
         TTF_Font* GetFont(std::string id);
-        void createEnemy(Vector2D pos, int width, int height, std::string id, std::string spriteId);
+        void createEnemy(Vector2D pos, int width, int height, std::string id, int hp);
         void CreateFlowerPattern(Vector2D pos, int petalCount, int bulletCount, int range, int bulletSpeed, std::string id);
     private:
         Manager* manager;

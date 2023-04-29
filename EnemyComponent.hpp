@@ -21,7 +21,7 @@ class EnemyComponent : public Component
         void update() override;
         int getHealth() const { return health; }
         void hitByBullet();
-        
+        bool isDead();
     private:
         TransformComponent* transform;
         SpriteComponent *sprite;

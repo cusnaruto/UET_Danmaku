@@ -33,6 +33,14 @@ class Vector2D
 
     Vector2D& operator*(const int& i);
     Vector2D& Zero();
+
+    Vector2D normalize() const {
+    float length = sqrt(x * x + y * y);
+    if (length > 0) {
+        return Vector2D(x / length, y / length);
+    }
+    return Vector2D(0, 0);
+}
     
     friend std::ostream& operator << (std::ostream& stream, const Vector2D& vec);
 

@@ -30,6 +30,7 @@ public:
             return isRunning;
         }
         static float deltaTime;
+        static int enemiesKilled;
         static SDL_Renderer *renderer;
         static SDL_Event event;
         static std::vector<ColliderComponent*> colliders;
@@ -41,7 +42,8 @@ public:
                 groupEnemies,
                 groupColliders,
                 groupLayouts,
-                groupEnemyBullets
+                groupEnemyBullets,
+                groupBosses,
         };
 private:
         bool isRunning;

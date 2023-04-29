@@ -27,6 +27,7 @@ auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
 auto& enemyBullet(manager.addEntity());
+auto& Mokou(manager.addEntity());
 
 std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
@@ -36,7 +37,14 @@ float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
 Uint32 lastFireTime = 0;
 Uint32 invulnerableTime = 0;
+const Uint32 spawnDelay = 2000;
+Uint32 lastSpawnTime = 0;
+
 int playerLives = 99;
+int Game::enemiesKilled = 0;
+
+bool BossIsSpawned = false;
+
 Game::Game()
 {
 }
@@ -109,6 +117,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/temp.jpg");
+    assets->AddTexture("mokou","assets/mokou.png");
     assets->AddFont("visby", "assets/visby.ttf", 16);
 
     Player.addComponent<TransformComponent>(285,500,49,32,1);
@@ -120,18 +129,10 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     SDL_Color white = {255,255,255,255};
     label.addComponent<UILabel>(618,95, "727 wysi", "visby", white);
 
-    assets->CreateBullet(Vector2D(300,300), Vector2D(0,2),200, 2,"mybullet");
-    assets->CreateBullet(Vector2D(200,300), Vector2D(0,2),200, 2,"mybullet");
     bullet.addComponent<TransformComponent>(NULL,NULL,23,21,1);
     bullet.addComponent<SpriteComponent>("bullet",true);
     bullet.addComponent<ColliderComponent>("mybullet");
     bullet.addGroup(groupBullets);
-    
-    Enemy.addComponent<TransformComponent>(285.0f,200.0f,29,23,2);
-    Enemy.addComponent<SpriteComponent>("enemy",false);
-    Enemy.addComponent<ColliderComponent>("enemy");
-    Enemy.addComponent<EnemyComponent>(0,50,Vector2D(0,0));
-    Enemy.addGroup(groupEnemies);
     
     enemyBullet.addComponent<TransformComponent>(NULL,NULL,12,12,1);
     enemyBullet.addComponent<SpriteComponent>("enemyBullet",false);
@@ -147,10 +148,12 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Background.addComponent<SpriteComponent>("background",false);
     Background.addComponent<ColliderComponent>("background");
     Background.addGroup(groupLayouts);
+
     
-    assets->createEnemy(Vector2D(50, 50), 29, 23, "enemy","enemy");
-    assets->createEnemy(Vector2D(100, 100), 29, 23, "enemy1","enemy1");
-    assets->createEnemy(Vector2D(150, 150), 29, 23, "enemy2","enemy2");
+    // assets->createEnemy(Vector2D(50, 50), 29, 23, "enemy","enemy");
+    // assets->createEnemy(Vector2D(100, 100), 29, 23, "enemy1","enemy1");
+    // assets->createEnemy(Vector2D(150, 150), 29, 23, "enemy2","enemy2");
+
 }   
 
 void Game::spawnBullet()
@@ -163,7 +166,7 @@ auto& colliders(manager.getGroup(Game::groupColliders));
 auto& bullets(manager.getGroup(Game::groupBullets));
 auto& enemies(manager.getGroup(Game::groupEnemies));
 auto& enemybullets(manager.getGroup(Game::groupEnemyBullets));
-
+auto& bosses(manager.getGroup(Game::groupBosses));
 void Game::quit() {
     isRunning = false;
 }
@@ -200,24 +203,72 @@ void Game::handleEvent()
 void Game::update() {
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
+    // Vector2D tempPos(playerPos.x,playerPos.y);
     srand(time(NULL));
     std::stringstream ss;
-    ss << "Player position: " << playerPos;
+    ss << "Enemies killed: " << enemiesKilled;
     label.getComponent<UILabel>().SetLabelText(ss.str(), "visby");
 
     manager.refresh();
     manager.update();
     deltaTime = SDL_GetTicks();
+
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
+    if (enemiesKilled % 10 == 0 && BossIsSpawned == false && enemiesKilled > 0) {
+    Mokou.addComponent<TransformComponent>(250,100,72,41,1);
+    Mokou.addComponent<SpriteComponent>("mokou", false);
+    Mokou.addComponent<ColliderComponent>("enemy");
+    Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0));
+    Mokou.addGroup(groupBosses);
+    BossIsSpawned = true;
+    }
+    if (Enemies.empty() && BossIsSpawned == false && SDL_GetTicks() - lastSpawnTime >= spawnDelay) {
+    for (int i = 0; i < 5; i++) {
+        assets->createEnemy(Vector2D(50 + i * 100, 100), 29,23,"enemy",10);
+    }
+    lastSpawnTime = SDL_GetTicks();
+    }
+        if (SDL_GetTicks() - lastFireTime >= fireRate){
+        for (auto& bs : bosses) {
+        auto& transform = bs->getComponent<TransformComponent>();
+        Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
+        assets->CreateFlowerPattern(bulletPos, 10,4,1000,2, "enemyBullet");
+        // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
+        std::cout << "flower bullet fired" << std::endl;
+        lastFireTime = SDL_GetTicks();
+            }   
+        }
+    for (auto& enemy : Enemies) {
+        for (auto& b : bullets) {
+            if (Collision::AABB(enemy->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
+                std::cout << "Hit enemy!" << std::endl;
+                b->destroy();
+                enemy->getComponent<EnemyComponent>().hitByBullet();
+            }
+        }
+    }
+    for (auto& Bosses : bosses) {
+        for (auto& b : bullets) {
+            if (Collision::AABB(Bosses->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
+                std::cout << "Hit enemy!" << std::endl;
+                b->destroy();
+                Bosses->getComponent<EnemyComponent>().hitByBullet();
+            }
+        }
+    }
     if (SDL_GetTicks() - lastFireTime >= fireRate){
     for (auto& enemy : Enemies) {
     auto& transform = enemy->getComponent<TransformComponent>();
-    Vector2D bulletPos(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
-    assets->CreateEnemyBullet(bulletPos, Vector2D(0, 1),1000,2, "enemyBullet");
+    auto& playerTransform = Player.getComponent<TransformComponent>();
+    Vector2D tempPos(playerTransform.position.x + playerTransform.width / 2, playerTransform.position.y + playerTransform.height / 2);
+    auto enemyPos = Vector2D(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
+    Vector2D dir = (tempPos - enemyPos).normalize();
+    Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
+    assets->CreateEnemyBullet(bulletPos, dir ,1000,2, "enemyBullet");
     // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
-            }   
+             }   
         }
     for (auto& enemy : Enemies) {
         for (auto& b : bullets) {
@@ -274,6 +325,10 @@ void Game::render()
     for (auto& eb : enemybullets)
     {
         eb->getComponent<SpriteComponent>().draw();
+    }
+    for (auto& boss : bosses)
+    {
+        boss->draw();
     }
     Layout.draw();
     label.draw();
