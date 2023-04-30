@@ -29,8 +29,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 This is a bullet hell game, heavily inspired by Touhou Project made by Team Shanghai Alice.
 
 This is made for my class's big project, INT2215.
