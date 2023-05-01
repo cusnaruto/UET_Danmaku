@@ -52,7 +52,7 @@ Uint32 lastSpawnTime = 0;
 int x1 = -5;
 int x2 = 5;
 
-int playerLives = 2;
+int playerLives = 99;
 int Game::enemiesKilled = 0;
 
 bool BossIsSpawned = false;
@@ -225,6 +225,11 @@ void Game::update() {
     if (playerLives == 0){
     GameOver GameOver;
     GameOver.show(*this);
+    isRunning = false;
+    }
+    if (enemiesKilled == 55){
+    YouWin youWin;
+    youWin.show(*this);
     isRunning = false;
     }
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
