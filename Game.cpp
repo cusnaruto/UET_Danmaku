@@ -36,13 +36,14 @@ std::vector<Entity*> Enemies;
 Uint32 timeNow = SDL_GetTicks();
 float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
-Uint32 fasterFireRate = 500;
+Uint32 fasterFireRate = 1000;
 Uint32 lastFireTime = 0;
 Uint32 invulnerableTime = 0;
 const Uint32 spawnDelay = 2000;
 Uint32 lastSpawnTime = 0;
 
-int x = -20;
+int x1 = -5;
+int x2 = 5;
 
 int playerLives = 99;
 int Game::enemiesKilled = 0;
@@ -137,7 +138,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Player.addGroup(groupPlayers);
 
     SDL_Color white = {255,255,255,255};
-    label.addComponent<UILabel>(618,95, "727 wysi", "visby", white);
+    label.addComponent<UILabel>(618,85, "727 wysi", "visby", white);
 
     bullet.addComponent<TransformComponent>(NULL,NULL,23,21,1);
     bullet.addComponent<SpriteComponent>("bullet",true);
@@ -280,13 +281,13 @@ void Game::update() {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy1",15,0,"enemy");
     }
     for (int j = 0; j < 5 && enemiesKilled < 32 && enemiesKilled >= 22; j++) {
-        assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy2",20,0,"enemy");
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 28,25,"enemy2",20,0,"enemy");
     }
     for (int j = 0; j < 5 && enemiesKilled < 43 && enemiesKilled >= 33; j++) {
-        assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy3",20,0,"enemy");
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 32,20,"enemy3",20,0,"enemy");
     }
     for (int j = 0; j < 5 && enemiesKilled < 54 && enemiesKilled >= 44; j++) {
-        assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy4",20,0,"enemy");
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 24,25,"enemy4",20,0,"enemy");
     }
     lastSpawnTime = SDL_GetTicks();
     }
@@ -315,11 +316,17 @@ void Game::update() {
         else if (bs->getComponent<EnemyComponent>().getID() == "flan"){
             fireRate = 200;
             
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x, 3),1000,2,"enemyBullet");
-            x+=1;
-            if (x == 20)
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 3),1000,2,"enemyBullet");
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 3),1000,2,"enemyBullet");
+            x1+=1;
+            x2-=1;
+            if (x1 == 5)
             {
-                x = -20;
+                x1 = -5;
+            }
+            if (x2 == -5)
+            {
+                x2 = 5;
             }
             }
         // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
@@ -343,6 +350,7 @@ void Game::update() {
                 if (Bosses->getComponent<EnemyComponent>().getHealth() == 1)
                 {
                     BossIsSpawned = false;
+                    fireRate = 2000;
                 }
                 Bosses->getComponent<EnemyComponent>().hitByBullet();
             }

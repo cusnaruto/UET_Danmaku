@@ -144,6 +144,7 @@ class Manager
             groupedEntities[mGroup].emplace_back(mEntity);
         }
 
+
         std::vector<Entity*>& getGroup(Group mGroup)
         {
             return groupedEntities[mGroup];
