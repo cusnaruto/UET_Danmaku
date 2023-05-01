@@ -106,3 +106,15 @@ void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets,
     }
 }
 
+void AssetManager::CreateBulletPattern(Vector2D pos, int count, int speed, int spread, std::string id,int height, int width, int scale)
+{
+    float angleIncrement = 360.0f / count;
+    float angle = 0.0f;
+
+    for (int i = 0; i < count; i++)
+    {
+        Vector2D vel = Vector2D::fromAngle(angle) * speed;
+        CreateEnemyBullet(pos, vel, 1000,speed,id,height,width,scale);
+        angle += angleIncrement;
+    }
+}

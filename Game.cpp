@@ -52,7 +52,7 @@ Uint32 lastSpawnTime = 0;
 int x1 = -5;
 int x2 = 5;
 
-int playerLives = 99;
+int playerLives = 2;
 int Game::enemiesKilled = 0;
 
 bool BossIsSpawned = false;
@@ -222,6 +222,11 @@ void Game::handleEvent()
 void Game::update() {
     manager.refresh();
     manager.update();
+    if (playerLives == 0){
+    GameOver GameOver;
+    GameOver.show(*this);
+    isRunning = false;
+    }
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
     // Vector2D tempPos(playerPos.x,playerPos.y);
@@ -334,7 +339,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateConePattern(bulletPos,dir,20,10,1000,1,"flanBullet2",17,10,1);
+            assets->CreateBulletPattern(bulletPos,20,2,5,"flanBullet2",17,10,1);
             }
         // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
         lastFireTime = SDL_GetTicks();
@@ -372,6 +377,7 @@ void Game::update() {
     Vector2D dir = (tempPos - enemyPos).normalize();
     Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
     assets->CreateEnemyBullet(bulletPos, dir ,1000,2, "enemyBullet",12,12,1);
+    
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
              }   

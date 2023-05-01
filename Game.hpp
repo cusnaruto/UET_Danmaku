@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include "MainMenu.hpp"
+#include "GameOver.hpp"
 
 
 class ColliderComponent;
