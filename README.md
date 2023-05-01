@@ -66,7 +66,7 @@ Please follow [this instruction](https://www.geeksforgeeks.org/installing-mingw-
 
 4.Open CMD by clicking on the address bar in WindowsExplorer, type `cmd` then `enter`.
 
-5.Paste the line of code below.
+5.Paste the line of code below and run it.
 
 `g++ -o Danmaku main.cpp Game.cpp TextureManager.cpp GameObject.cpp Vector2D.cpp Collision.cpp ECS.cpp AssetManager.cpp EnemyComponent.cpp MainMenu.cpp -I src\include -L src\lib -w  -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer`
 
