@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <cmath>
+#include <random>
 class Vector2D
 {
     public:
@@ -33,7 +34,6 @@ class Vector2D
 
     Vector2D& operator*(const int& i);
     Vector2D& Zero();
-
     Vector2D normalize() const {
     float length = sqrt(x * x + y * y);
     if (length > 0) {
@@ -41,7 +41,10 @@ class Vector2D
     }
     return Vector2D(0, 0);
 }
-    
+    static Vector2D fromAngle(float angle) {
+        return Vector2D(cos(angle), sin(angle));
+    }
+
     friend std::ostream& operator << (std::ostream& stream, const Vector2D& vec);
 
 };

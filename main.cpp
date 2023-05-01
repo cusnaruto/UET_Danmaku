@@ -6,11 +6,16 @@ int main( int argc, char **argv ){
     const int frameDelay = 1000/FPS;
     
     Uint32 frameStart;
+    
     int frameTime;
-
+    
     game = new Game();
     game ->init("UET_Danmaku", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,800,600,false);
     while (game->running()){
+        Uint32 timeNow = SDL_GetTicks();
+        Uint32 prevTime = 0;
+        Game::deltaTime = (timeNow - prevTime) / 1000.0f;
+        prevTime = timeNow;
         frameStart = SDL_GetTicks();
 
         game->handleEvent();

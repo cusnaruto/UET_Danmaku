@@ -18,14 +18,36 @@ void AssetManager::CreateBullet(Vector2D pos,Vector2D vel, int range, int speed,
     bullet.addGroup(Game::groupBullets);
 }
 
-void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id, int hp)
+void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id, int hp,int speed,std::string enemyid)
 {
     auto& enemy(manager->addEntity()); 
     enemy.addComponent<TransformComponent>(pos.x, pos.y, width, height, 1.5);
     enemy.addComponent<SpriteComponent>(id,false);
-    enemy.addComponent<EnemyComponent>(0, hp, Vector2D(0, 0));
+    enemy.addComponent<EnemyComponent>(speed, hp, Vector2D(0, 0),enemyid);
     enemy.addComponent<ColliderComponent>("enemy");
     enemy.addGroup(Game::groupEnemies);
+}
+
+void AssetManager::CreateSineWaveBulletPattern(Vector2D pos, int numBullets, int speed, int range, std::string id,int wavelength, int frequency, int amplitude)
+{
+    // Calculate the vertical distance between each bullet
+    int spacing = wavelength / numBullets;
+
+    // Create the bullets in a vertical sine wave pattern
+    for (int i = 0; i < numBullets; i++)
+    {
+        auto& bullet(manager->addEntity());
+
+        // Calculate the x-position based on the spacing and sine function
+        float x = pos.x + i * spacing;
+        float y = pos.y + amplitude * sin((x - pos.x) * frequency);
+        // Create the bullet entity
+        bullet.addComponent<TransformComponent>(x, y, 12, 12, 1);
+        bullet.addComponent<SpriteComponent>(id, false);
+        bullet.addComponent<BulletComponent>(1000, speed, Vector2D(0, 1));
+        bullet.addComponent<ColliderComponent>("bullet");
+        bullet.addGroup(Game::groupEnemyBullets);
+    }
 }
 
 void AssetManager::AddTexture(std::string id, const char* path)
@@ -83,3 +105,25 @@ void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletC
     }
 }
 
+void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets, float angle, int range, int speed, std::string id)
+{
+    // Calculate angle between each bullet
+    float angleBetweenBullets = angle / (numBullets - 1);
+
+    // Calculate starting angle
+    float startAngle = -angle / 2;
+
+    // Create bullets
+    for (int i = 0; i < numBullets; i++) {
+        // Calculate direction of current bullet
+        Vector2D currentDir = dir.fromAngle(startAngle + i * angleBetweenBullets);
+
+        // Create bullet entity
+        auto& bullet(manager->addEntity());
+        bullet.addComponent<TransformComponent>(pos.x, pos.y, 12, 12, 1);
+        bullet.addComponent<SpriteComponent>(id, false);
+        bullet.addComponent<BulletComponent>(range, speed, currentDir);
+        bullet.addComponent<ColliderComponent>("bullet");
+        bullet.addGroup(Game::groupEnemyBullets);
+    }
+}

@@ -8,7 +8,7 @@
 class EnemyComponent : public Component
 {
     public:
-        EnemyComponent(int spd, int hp, Vector2D vel) : speed(spd), health(hp), velocity(vel)
+        EnemyComponent(int spd, int hp, Vector2D vel, std::string id) : speed(spd), health(hp), velocity(vel), ID(id)
         {}
         ~EnemyComponent()
         {}
@@ -22,6 +22,8 @@ class EnemyComponent : public Component
         int getHealth() const { return health; }
         void hitByBullet();
         bool isDead();
+        void updateRandomMovement(float deltaTime);
+        std::string getID() const {return ID;}
     private:
         TransformComponent* transform;
         SpriteComponent *sprite;
@@ -29,6 +31,7 @@ class EnemyComponent : public Component
         int health;
         int speed;
         std::string tag;
+        std::string ID;
         Vector2D velocity;
 
 
