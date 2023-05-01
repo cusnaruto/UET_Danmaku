@@ -127,3 +127,4 @@ void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets,
         bullet.addGroup(Game::groupEnemyBullets);
     }
 }
+

@@ -24,6 +24,7 @@ void EnemyComponent::update()
     {
         transform->velocity.y *= -1;
     }
+    
 }
 
 

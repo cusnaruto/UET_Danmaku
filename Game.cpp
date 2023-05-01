@@ -36,10 +36,13 @@ std::vector<Entity*> Enemies;
 Uint32 timeNow = SDL_GetTicks();
 float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
+Uint32 fasterFireRate = 500;
 Uint32 lastFireTime = 0;
 Uint32 invulnerableTime = 0;
 const Uint32 spawnDelay = 2000;
 Uint32 lastSpawnTime = 0;
+
+int x = -20;
 
 int playerLives = 99;
 int Game::enemiesKilled = 0;
@@ -116,6 +119,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("enemy1", "assets/mob2.png");
     assets->AddTexture("enemy2", "assets/mob3.png");
     assets->AddTexture("enemy3", "assets/fairy4.png");
+    assets->AddTexture("enemy4", "assets/fairy5.png");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/temp.jpg");
@@ -123,6 +127,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("koishi", "assets/koishi.png");
     assets->AddTexture("cirno", "assets/cirno.png");
     assets->AddTexture("chen", "assets/chen.png");
+    assets->AddTexture("flan","assets/flan.png");
     assets->AddFont("visby", "assets/visby.ttf", 16);
 
     Player.addComponent<TransformComponent>(285,500,49,32,1);
@@ -258,6 +263,15 @@ void Game::update() {
     Chen.addGroup(groupBosses);
     BossIsSpawned = true;
     }
+    if (enemiesKilled == 54 && BossIsSpawned == false) {
+    auto& Flan(manager.addEntity());
+    Flan.addComponent<TransformComponent>(250,100,69,43,1);
+    Flan.addComponent<SpriteComponent>("flan", false);
+    Flan.addComponent<ColliderComponent>("enemy");
+    Flan.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"flan");
+    Flan.addGroup(groupBosses);
+    BossIsSpawned = true;
+    }
     if (Enemies.empty() && BossIsSpawned == false && SDL_GetTicks() - lastSpawnTime >= spawnDelay) {
     for (int i = 0; i < 5 && enemiesKilled < 10; i++) {
         assets->createEnemy(Vector2D(50 + i * 100, 100), 29,23,"enemy",10,0,"enemy");
@@ -269,7 +283,10 @@ void Game::update() {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy2",20,0,"enemy");
     }
     for (int j = 0; j < 5 && enemiesKilled < 43 && enemiesKilled >= 33; j++) {
-        assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy2",20,0,"enemy");
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy3",20,0,"enemy");
+    }
+    for (int j = 0; j < 5 && enemiesKilled < 54 && enemiesKilled >= 44; j++) {
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 29,23,"enemy4",20,0,"enemy");
     }
     lastSpawnTime = SDL_GetTicks();
     }
@@ -292,8 +309,18 @@ void Game::update() {
         }
         }
         else if (bs->getComponent<EnemyComponent>().getID() == "chen"){
-        // Calculate the rotation angle for each bullet
-        
+            fireRate = fasterFireRate;
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+1),1000,2,"enemyBullet");
+            }
+        else if (bs->getComponent<EnemyComponent>().getID() == "flan"){
+            fireRate = 200;
+            
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x, 3),1000,2,"enemyBullet");
+            x+=1;
+            if (x == 20)
+            {
+                x = -20;
+            }
             }
         // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
         lastFireTime = SDL_GetTicks();
