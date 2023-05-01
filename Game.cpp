@@ -28,7 +28,11 @@ auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
 auto& enemyBullet(manager.addEntity());
-
+auto& chenBullet(manager.addEntity());
+auto& mokouBullet(manager.addEntity());
+auto& koishiBullet(manager.addEntity());
+auto& cirnoBullet(manager.addEntity());
+auto& flanBullet(manager.addEntity());
 
 std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
@@ -117,6 +121,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("mybullet", "assets/playerbullet.png");
     assets->AddTexture("enemy", "assets/fairy.png");
     assets->AddTexture("enemyBullet", "assets/red2.png");
+    assets->AddTexture("chenBullet", "assets/greenknife.png");
+    assets->AddTexture("mokouBullet", "assets/mokoubullet.png");
+    assets->AddTexture("koishiBullet", "assets/koishiBullet.png");
+    assets->AddTexture("cirnoBullet", "assets/cirnoBullet.png");
+    assets->AddTexture("flanBullet", "assets/flanBullet.png");
     assets->AddTexture("enemy1", "assets/mob2.png");
     assets->AddTexture("enemy2", "assets/mob3.png");
     assets->AddTexture("enemy3", "assets/fairy4.png");
@@ -150,6 +159,31 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     enemyBullet.addComponent<ColliderComponent>("enemybullet");
     enemyBullet.addGroup(groupEnemyBullets);
 
+    chenBullet.addComponent<TransformComponent>(NULL,NULL,29,19,1);
+    chenBullet.addComponent<SpriteComponent>("chenBullet",false);
+    chenBullet.addComponent<ColliderComponent>("enemybullet");
+    chenBullet.addGroup(groupEnemyBullets);
+
+    mokouBullet.addComponent<TransformComponent>(NULL,NULL,16,16,1);
+    mokouBullet.addComponent<SpriteComponent>("mokouBullet",false);
+    mokouBullet.addComponent<ColliderComponent>("enemybullet");
+    mokouBullet.addGroup(groupEnemyBullets);
+
+    koishiBullet.addComponent<TransformComponent>(NULL,NULL,10,16,1);
+    koishiBullet.addComponent<SpriteComponent>("koishiBullet",false);
+    koishiBullet.addComponent<ColliderComponent>("enemybullet");
+    koishiBullet.addGroup(groupEnemyBullets);
+
+    cirnoBullet.addComponent<TransformComponent>(NULL,NULL,10,18,2);
+    cirnoBullet.addComponent<SpriteComponent>("cirnoBullet",false);
+    cirnoBullet.addComponent<ColliderComponent>("enemybullet");
+    cirnoBullet.addGroup(groupEnemyBullets);
+
+    flanBullet.addComponent<TransformComponent>(NULL,NULL,16,16,3);
+    flanBullet.addComponent<SpriteComponent>("flanBullet",false);
+    flanBullet.addComponent<ColliderComponent>("enemybullet");
+    flanBullet.addGroup(groupEnemyBullets);
+    
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
     Layout.addComponent<SpriteComponent>("layout",false);
     Layout.addComponent<ColliderComponent>("layout");
@@ -215,6 +249,8 @@ void Game::handleEvent()
 // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
 
 void Game::update() {
+    manager.refresh();
+    manager.update();
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
     // Vector2D tempPos(playerPos.x,playerPos.y);
@@ -223,8 +259,6 @@ void Game::update() {
     ss << "Enemies killed: " << enemiesKilled;
     label.getComponent<UILabel>().SetLabelText(ss.str(), "visby");
 
-    manager.refresh();
-    manager.update();
     deltaTime = SDL_GetTicks();
 
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
@@ -300,24 +334,24 @@ void Game::update() {
         Vector2D dir = (tempPos - enemyPos).normalize();
         Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
         if (bs->getComponent<EnemyComponent>().getID() == "mokou"){
-        assets->CreateFlowerPattern(bulletPos, 20,5,1000,2, "enemyBullet");}
+        assets->CreateFlowerPattern(bulletPos, 30,6,1000,2, "mokouBullet",16,16);}
         else if (bs->getComponent<EnemyComponent>().getID() == "koishi"){
-        assets->CreateConePattern(bulletPos,dir,60,20,1000,2,"enemyBullet");}
+        assets->CreateConePattern(bulletPos,dir,60,20,1000,2,"koishiBullet",16,10,1);}
         else if (bs->getComponent<EnemyComponent>().getID() == "cirno"){
         for (int i = -5; i < 5; i++)
         {
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+3)),1000,2,"enemyBullet");
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+3)),1000,2,"cirnoBullet",18,10,2);
         }
         }
         else if (bs->getComponent<EnemyComponent>().getID() == "chen"){
             fireRate = fasterFireRate;
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+1),1000,2,"enemyBullet");
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+1),1000,2,"chenBullet",29,19,2);
             }
         else if (bs->getComponent<EnemyComponent>().getID() == "flan"){
             fireRate = 200;
             
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 3),1000,2,"enemyBullet");
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 3),1000,2,"enemyBullet");
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 3),1000,2,"flanBullet",16,16,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 3),1000,2,"flanBullet",16,16,2);
             x1+=1;
             x2-=1;
             if (x1 == 5)
@@ -364,7 +398,7 @@ void Game::update() {
     auto enemyPos = Vector2D(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
     Vector2D dir = (tempPos - enemyPos).normalize();
     Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
-    assets->CreateEnemyBullet(bulletPos, dir ,1000,2, "enemyBullet");
+    assets->CreateEnemyBullet(bulletPos, dir ,1000,2, "enemyBullet",12,12,1);
     std::cout << "bullet fired" << std::endl;
     lastFireTime = SDL_GetTicks();
              }   

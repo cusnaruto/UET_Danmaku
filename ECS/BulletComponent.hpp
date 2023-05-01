@@ -40,6 +40,7 @@ class BulletComponent : public Component
     transform->velocity.x = vx;
     transform->velocity.y = vy;
     }
+     float phase = 0.0f;
 
     Vector2D velocity;
     private:

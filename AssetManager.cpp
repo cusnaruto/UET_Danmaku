@@ -28,28 +28,6 @@ void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string 
     enemy.addGroup(Game::groupEnemies);
 }
 
-void AssetManager::CreateSineWaveBulletPattern(Vector2D pos, int numBullets, int speed, int range, std::string id,int wavelength, int frequency, int amplitude)
-{
-    // Calculate the vertical distance between each bullet
-    int spacing = wavelength / numBullets;
-
-    // Create the bullets in a vertical sine wave pattern
-    for (int i = 0; i < numBullets; i++)
-    {
-        auto& bullet(manager->addEntity());
-
-        // Calculate the x-position based on the spacing and sine function
-        float x = pos.x + i * spacing;
-        float y = pos.y + amplitude * sin((x - pos.x) * frequency);
-        // Create the bullet entity
-        bullet.addComponent<TransformComponent>(x, y, 12, 12, 1);
-        bullet.addComponent<SpriteComponent>(id, false);
-        bullet.addComponent<BulletComponent>(1000, speed, Vector2D(0, 1));
-        bullet.addComponent<ColliderComponent>("bullet");
-        bullet.addGroup(Game::groupEnemyBullets);
-    }
-}
-
 void AssetManager::AddTexture(std::string id, const char* path)
 {
     textures.emplace(id, TextureManager::LoadTexture(path));
@@ -70,10 +48,10 @@ TTF_Font* AssetManager::GetFont(std::string id)
 }
 
 
-void AssetManager::CreateEnemyBullet(Vector2D pos,Vector2D vel, int range, int speed, std::string id)
+void AssetManager::CreateEnemyBullet(Vector2D pos,Vector2D vel, int range, int speed, std::string id,int height, int width,int scale)
 {
     auto& bullet(manager->addEntity());
-    bullet.addComponent<TransformComponent>(pos.x, pos.y,12,12,1);
+    bullet.addComponent<TransformComponent>(pos.x, pos.y,height,width,scale);
     bullet.addComponent<SpriteComponent>(id,false);
     bullet.addComponent<BulletComponent>(range, speed, vel);
     bullet.addComponent<ColliderComponent>("bullet");
@@ -81,7 +59,7 @@ void AssetManager::CreateEnemyBullet(Vector2D pos,Vector2D vel, int range, int s
 }
 
 
-void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletCount, int range, int bulletSpeed, std::string id)
+void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletCount, int range, int bulletSpeed, std::string id,int height, int width)
 {
     int radius = 20;
     int speed = 3;
@@ -96,7 +74,7 @@ void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletC
             float dy = radius * sin(bulletAngle);
 
             auto& bullet(manager->addEntity());
-            bullet.addComponent<TransformComponent>(pos.x + dx, pos.y + dy, 10, 10, 1);
+            bullet.addComponent<TransformComponent>(pos.x + dx, pos.y + dy, height, width, 1);
             bullet.addComponent<SpriteComponent>(id,false);
             bullet.addComponent<BulletComponent>(range, bulletSpeed, Vector2D(speed * cos(angle), speed * sin(angle)));
             bullet.addComponent<ColliderComponent>("bullet");
@@ -105,7 +83,7 @@ void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletC
     }
 }
 
-void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets, float angle, int range, int speed, std::string id)
+void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets, float angle, int range, int speed, std::string id,int height, int width,int scale)
 {
     // Calculate angle between each bullet
     float angleBetweenBullets = angle / (numBullets - 1);
@@ -120,7 +98,7 @@ void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets,
 
         // Create bullet entity
         auto& bullet(manager->addEntity());
-        bullet.addComponent<TransformComponent>(pos.x, pos.y, 12, 12, 1);
+        bullet.addComponent<TransformComponent>(pos.x, pos.y, height, width, scale);
         bullet.addComponent<SpriteComponent>(id, false);
         bullet.addComponent<BulletComponent>(range, speed, currentDir);
         bullet.addComponent<ColliderComponent>("bullet");
