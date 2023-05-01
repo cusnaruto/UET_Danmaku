@@ -31,8 +31,11 @@ auto& enemyBullet(manager.addEntity());
 auto& chenBullet(manager.addEntity());
 auto& mokouBullet(manager.addEntity());
 auto& koishiBullet(manager.addEntity());
+auto& koishiBullet2(manager.addEntity());
 auto& cirnoBullet(manager.addEntity());
 auto& flanBullet(manager.addEntity());
+auto& flanBullet2(manager.addEntity());
+
 
 std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
@@ -40,7 +43,7 @@ std::vector<Entity*> Enemies;
 Uint32 timeNow = SDL_GetTicks();
 float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
-Uint32 fasterFireRate = 1000;
+Uint32 fasterFireRate = 750;
 Uint32 lastFireTime = 0;
 Uint32 invulnerableTime = 0;
 const Uint32 spawnDelay = 2000;
@@ -124,8 +127,10 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("chenBullet", "assets/greenknife.png");
     assets->AddTexture("mokouBullet", "assets/mokoubullet.png");
     assets->AddTexture("koishiBullet", "assets/koishiBullet.png");
+    assets->AddTexture("koishiBullet2", "assets/koishibullet2.png");
     assets->AddTexture("cirnoBullet", "assets/cirnoBullet.png");
     assets->AddTexture("flanBullet", "assets/flanBullet.png");
+    assets->AddTexture("flanBullet2", "assets/flanbullet2.png");
     assets->AddTexture("enemy1", "assets/mob2.png");
     assets->AddTexture("enemy2", "assets/mob3.png");
     assets->AddTexture("enemy3", "assets/fairy4.png");
@@ -149,41 +154,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     SDL_Color white = {255,255,255,255};
     label.addComponent<UILabel>(618,85, "727 wysi", "visby", white);
 
-    bullet.addComponent<TransformComponent>(NULL,NULL,23,21,1);
-    bullet.addComponent<SpriteComponent>("bullet",true);
-    bullet.addComponent<ColliderComponent>("mybullet");
-    bullet.addGroup(groupBullets);
-    
-    enemyBullet.addComponent<TransformComponent>(NULL,NULL,12,12,1);
-    enemyBullet.addComponent<SpriteComponent>("enemyBullet",false);
-    enemyBullet.addComponent<ColliderComponent>("enemybullet");
-    enemyBullet.addGroup(groupEnemyBullets);
 
-    chenBullet.addComponent<TransformComponent>(NULL,NULL,29,19,1);
-    chenBullet.addComponent<SpriteComponent>("chenBullet",false);
-    chenBullet.addComponent<ColliderComponent>("enemybullet");
-    chenBullet.addGroup(groupEnemyBullets);
-
-    mokouBullet.addComponent<TransformComponent>(NULL,NULL,16,16,1);
-    mokouBullet.addComponent<SpriteComponent>("mokouBullet",false);
-    mokouBullet.addComponent<ColliderComponent>("enemybullet");
-    mokouBullet.addGroup(groupEnemyBullets);
-
-    koishiBullet.addComponent<TransformComponent>(NULL,NULL,10,16,1);
-    koishiBullet.addComponent<SpriteComponent>("koishiBullet",false);
-    koishiBullet.addComponent<ColliderComponent>("enemybullet");
-    koishiBullet.addGroup(groupEnemyBullets);
-
-    cirnoBullet.addComponent<TransformComponent>(NULL,NULL,10,18,2);
-    cirnoBullet.addComponent<SpriteComponent>("cirnoBullet",false);
-    cirnoBullet.addComponent<ColliderComponent>("enemybullet");
-    cirnoBullet.addGroup(groupEnemyBullets);
-
-    flanBullet.addComponent<TransformComponent>(NULL,NULL,16,16,3);
-    flanBullet.addComponent<SpriteComponent>("flanBullet",false);
-    flanBullet.addComponent<ColliderComponent>("enemybullet");
-    flanBullet.addGroup(groupEnemyBullets);
-    
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
     Layout.addComponent<SpriteComponent>("layout",false);
     Layout.addComponent<ColliderComponent>("layout");
@@ -334,9 +305,10 @@ void Game::update() {
         Vector2D dir = (tempPos - enemyPos).normalize();
         Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
         if (bs->getComponent<EnemyComponent>().getID() == "mokou"){
-        assets->CreateFlowerPattern(bulletPos, 30,6,1000,2, "mokouBullet",16,16);}
+        assets->CreateFlowerPattern(bulletPos, 20,5,1000,2, "mokouBullet",16,16);}
         else if (bs->getComponent<EnemyComponent>().getID() == "koishi"){
-        assets->CreateConePattern(bulletPos,dir,60,20,1000,2,"koishiBullet",16,10,1);}
+        assets->CreateConePattern(bulletPos,dir,60,20,1000,2,"koishiBullet",16,10,1);
+        assets->CreateFlowerPattern(bulletPos, 10,3,1000,1, "koishiBullet2",12,12);}
         else if (bs->getComponent<EnemyComponent>().getID() == "cirno"){
         for (int i = -5; i < 5; i++)
         {
@@ -345,7 +317,7 @@ void Game::update() {
         }
         else if (bs->getComponent<EnemyComponent>().getID() == "chen"){
             fireRate = fasterFireRate;
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+1),1000,2,"chenBullet",29,19,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+1),1000,1,"chenBullet",29,19,2);
             }
         else if (bs->getComponent<EnemyComponent>().getID() == "flan"){
             fireRate = 200;
@@ -362,6 +334,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
+            assets->CreateConePattern(bulletPos,dir,20,10,1000,1,"flanBullet2",17,10,1);
             }
         // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
         lastFireTime = SDL_GetTicks();
