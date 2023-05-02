@@ -30,6 +30,7 @@ class AssetManager
         void CreateFlowerPattern(Vector2D pos, int petalCount, int bulletCount, int range, int bulletSpeed, std::string id, int height, int width);
         void CreateConePattern(Vector2D pos, Vector2D dir, int numBullets, float angle, int range, int speed, std::string id,int height, int width, int scale);
         void CreateBulletPattern(Vector2D pos, int count, int speed, int spread, std::string id,int height, int width, int scale);
+        void createBoss(Vector2D pos, int width, int height, std::string id, int hp,int speed,std::string enemyid);
     private:
         Manager* manager;
         std::map<std::string, SDL_Texture*> textures;

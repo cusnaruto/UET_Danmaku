@@ -29,7 +29,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This is a bullet hell game, heavily inspired by the Touhou Project series made by Team Shanghai Alice.
+This is a bullet hell game, heavily inspired by the [Touhou Project series](https://en.wikipedia.org/wiki/Touhou_Project) made by [Team Shanghai Alice](https://en.wikipedia.org/wiki/Team_Shanghai_Alice).
 
 This is made for my class's big project, INT2215.
 
@@ -49,14 +49,16 @@ Using VS Code as my code editor.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
+This is an example of how to set up the project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-To complie and run the project, you need [Mingw](https://sourceforge.net/projects/mingw/)_ installed.
+*This is on Windows 10.
 
-Please follow [this instruction](https://www.geeksforgeeks.org/installing-mingw-tools-for-c-c-and-changing-environment-variable/)_to install it.
+To complie and run the project, you need [Mingw](https://sourceforge.net/projects/mingw/) installed.
+
+Please follow [this instruction](https://www.geeksforgeeks.org/installing-mingw-tools-for-c-c-and-changing-environment-variable/) to install it.
 ### Installation
 
 1.Clone the repo.
@@ -110,6 +112,8 @@ Here's the things I used while making the game.
 
 * [Game Sprite Sheets](https://www.spriters-resource.com/)
 * [Let's Make Games's SDL2 Tutorial](https://www.youtube.com/@CarlBirch)
+* [The Prismriver's Theme - Phantom Ensemble](https://www.youtube.com/watch?v=M9wHYiicY5I)
+* [Vine boom sound effect](https://www.youtube.com/watch?v=Oc7Cin_87H4)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

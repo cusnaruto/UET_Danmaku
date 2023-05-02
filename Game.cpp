@@ -243,21 +243,25 @@ void Game::update() {
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
     if (enemiesKilled == 10 && BossIsSpawned == false) 
     {
-    Mokou.addComponent<TransformComponent>(250,100,72,41,1);
-    Mokou.addComponent<SpriteComponent>("mokou", false);
-    Mokou.addComponent<ColliderComponent>("enemy");
-    // Mokou.addComponent<RandomMovementComponent>(1,100,435);
-    Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
-    Mokou.addGroup(groupBosses);
+    // Mokou.addComponent<TransformComponent>(250,100,72,41,1);
+    // Mokou.addComponent<SpriteComponent>("mokou", false);
+    // Mokou.addComponent<ColliderComponent>("enemy");
+    // // Mokou.addComponent<RandomMovementComponent>(1,100,435);
+    // Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
+    // Mokou.addGroup(groupBosses);
+    // BossIsSpawned = true;
+    assets->createBoss(Vector2D(250,100),72,41,"mokou",50,0,"mokou");
     BossIsSpawned = true;
     }
     if (enemiesKilled == 21 && BossIsSpawned == false) {
-    auto& Koishi(manager.addEntity());
-    Koishi.addComponent<TransformComponent>(250,100,65,38,1);
-    Koishi.addComponent<SpriteComponent>("koishi", false);
-    Koishi.addComponent<ColliderComponent>("enemy");
-    Koishi.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"koishi");
-    Koishi.addGroup(groupBosses);
+    // auto& Koishi(manager.addEntity());
+    // Koishi.addComponent<TransformComponent>(250,100,65,38,1);
+    // Koishi.addComponent<SpriteComponent>("koishi", false);
+    // Koishi.addComponent<ColliderComponent>("enemy");
+    // Koishi.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"koishi");
+    // Koishi.addGroup(groupBosses);
+    // BossIsSpawned = true;
+    assets->createBoss(Vector2D(250,100),65,38,"koishi",50,0,"koishi");
     BossIsSpawned = true;
     }
     if (enemiesKilled == 32 && BossIsSpawned == false) {
@@ -362,12 +366,12 @@ void Game::update() {
             if (Collision::AABB(Bosses->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
                 std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
-                if (Bosses->getComponent<EnemyComponent>().getHealth() == 1)
+                Bosses->getComponent<EnemyComponent>().hitByBullet();
+                if (Bosses->getComponent<EnemyComponent>().getHealth() <= 0)
                 {
                     BossIsSpawned = false;
                     fireRate = 2000;
                 }
-                Bosses->getComponent<EnemyComponent>().hitByBullet();
             }
         }
     }
