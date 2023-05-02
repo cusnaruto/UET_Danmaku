@@ -23,6 +23,7 @@ Mix_Chunk *shoot = NULL;
 
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
+auto& Mokou(manager.addEntity());
 auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
@@ -123,6 +124,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
     assets->AddTexture("mybullet", "assets/playerbullet.png");
     assets->AddTexture("enemy", "assets/fairy.png");
+    assets->AddTexture("mokou","assets/mokou.png");
+    assets->AddTexture("koishi", "assets/koishi.png");
+    assets->AddTexture("cirno", "assets/cirno.png");
+    assets->AddTexture("chen", "assets/chen.png");
+    assets->AddTexture("flan","assets/flan.png");
     assets->AddTexture("enemyBullet", "assets/red2.png");
     assets->AddTexture("chenBullet", "assets/greenknife.png");
     assets->AddTexture("mokouBullet", "assets/mokoubullet.png");
@@ -138,11 +144,6 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/temp.jpg");
-    assets->AddTexture("mokou","assets/mokou.png");
-    assets->AddTexture("koishi", "assets/koishi.png");
-    assets->AddTexture("cirno", "assets/cirno.png");
-    assets->AddTexture("chen", "assets/chen.png");
-    assets->AddTexture("flan","assets/flan.png");
     assets->AddFont("visby", "assets/visby.ttf", 16);
 
     Player.addComponent<TransformComponent>(285,500,49,32,1);
@@ -177,12 +178,14 @@ void Game::spawnBullet()
     Vector2D player = Player.getComponent<TransformComponent>().position;
     assets->CreateBullet(Vector2D(player.x+6,player.y-15), Vector2D(0,-4),1000, 2,"mybullet");
 }
+
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& bullets(manager.getGroup(Game::groupBullets));
 auto& enemies(manager.getGroup(Game::groupEnemies));
 auto& enemybullets(manager.getGroup(Game::groupEnemyBullets));
 auto& bosses(manager.getGroup(Game::groupBosses));
+
 void Game::quit() {
     isRunning = false;
 }
@@ -190,16 +193,16 @@ void Game::quit() {
 void Game::respawnPlayer() {
     if (playerLives > 0) {
         --playerLives;
-        Player.getComponent<TransformComponent>().position = Vector2D(283, 500); // set the default position
-        invulnerableTime = SDL_GetTicks() + 4000; // make the player invulnerable for 2 seconds
+        Player.getComponent<TransformComponent>().position = Vector2D(283, 500);
+        invulnerableTime = SDL_GetTicks() + 4000;
     } else {
-        // handle game over
+        GameOver GameOver;
+        GameOver.show(*this);
+        isRunning = false;
     }
 }
 void Game::handleEvent()
 {
-    Vector2D playerPos = Player.getComponent<TransformComponent>().position;
-    Uint32 lastBulletTime = 0;
     SDL_PollEvent(&event);
     switch (event.type)
     {
@@ -222,11 +225,6 @@ void Game::handleEvent()
 void Game::update() {
     manager.refresh();
     manager.update();
-    if (playerLives == 0){
-    GameOver GameOver;
-    GameOver.show(*this);
-    isRunning = false;
-    }
     if (enemiesKilled == 55){
     YouWin youWin;
     youWin.show(*this);
@@ -243,11 +241,12 @@ void Game::update() {
     deltaTime = SDL_GetTicks();
 
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
-    if (enemiesKilled == 10 && BossIsSpawned == false) {
-    auto& Mokou(manager.addEntity());
+    if (enemiesKilled == 10 && BossIsSpawned == false) 
+    {
     Mokou.addComponent<TransformComponent>(250,100,72,41,1);
     Mokou.addComponent<SpriteComponent>("mokou", false);
     Mokou.addComponent<ColliderComponent>("enemy");
+    // Mokou.addComponent<RandomMovementComponent>(1,100,435);
     Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
     Mokou.addGroup(groupBosses);
     BossIsSpawned = true;
@@ -288,7 +287,7 @@ void Game::update() {
     Flan.addGroup(groupBosses);
     BossIsSpawned = true;
     }
-    if (Enemies.empty() && BossIsSpawned == false && SDL_GetTicks() - lastSpawnTime >= spawnDelay) {
+    if (Enemies.empty() && BossIsSpawned == false ) {
     for (int i = 0; i < 5 && enemiesKilled < 10; i++) {
         assets->createEnemy(Vector2D(50 + i * 100, 100), 29,23,"enemy",10,0,"enemy");
     }
@@ -304,8 +303,7 @@ void Game::update() {
     for (int j = 0; j < 5 && enemiesKilled < 54 && enemiesKilled >= 44; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 24,25,"enemy4",20,0,"enemy");
     }
-    lastSpawnTime = SDL_GetTicks();
-    }
+        }
         if (SDL_GetTicks() - lastFireTime >= fireRate){
         for (auto& bs : bosses) {
         auto& transform = bs->getComponent<TransformComponent>();
@@ -426,6 +424,10 @@ void Game::render()
     {
         b->getComponent<SpriteComponent>().draw();
     }
+    for (auto& boss : bosses)
+    {
+        boss->getComponent<SpriteComponent>().draw();
+    }
     for (auto& e : enemies)
     {
         e->getComponent<SpriteComponent>().draw();
@@ -434,10 +436,7 @@ void Game::render()
     {
         eb->getComponent<SpriteComponent>().draw();
     }
-    for (auto& boss : bosses)
-    {
-        boss->draw();
-    }
+
     Layout.draw();
     label.draw();
     SDL_RenderPresent(renderer);

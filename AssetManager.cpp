@@ -21,7 +21,7 @@ void AssetManager::CreateBullet(Vector2D pos,Vector2D vel, int range, int speed,
 void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id, int hp,int speed,std::string enemyid)
 {
     auto& enemy(manager->addEntity()); 
-    enemy.addComponent<TransformComponent>(pos.x, pos.y, width, height, 1.5);
+    enemy.addComponent<TransformComponent>(pos.x, pos.y, width, height, 1);
     enemy.addComponent<SpriteComponent>(id,false);
     enemy.addComponent<EnemyComponent>(speed, hp, Vector2D(0, 0),enemyid);
     enemy.addComponent<ColliderComponent>("enemy");
@@ -85,18 +85,15 @@ void AssetManager::CreateFlowerPattern(Vector2D pos, int petalCount, int bulletC
 
 void AssetManager::CreateConePattern(Vector2D pos, Vector2D dir, int numBullets, float angle, int range, int speed, std::string id,int height, int width,int scale)
 {
-    // Calculate angle between each bullet
     float angleBetweenBullets = angle / (numBullets - 1);
 
-    // Calculate starting angle
+    
     float startAngle = -angle / 2;
 
-    // Create bullets
-    for (int i = 0; i < numBullets; i++) {
-        // Calculate direction of current bullet
-        Vector2D currentDir = dir.fromAngle(startAngle + i * angleBetweenBullets);
 
-        // Create bullet entity
+    for (int i = 0; i < numBullets; i++) {
+
+        Vector2D currentDir = dir.fromAngle(startAngle + i * angleBetweenBullets);
         auto& bullet(manager->addEntity());
         bullet.addComponent<TransformComponent>(pos.x, pos.y, height, width, scale);
         bullet.addComponent<SpriteComponent>(id, false);

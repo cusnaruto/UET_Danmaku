@@ -5,5 +5,6 @@
 #include "KeyboardController.hpp"
 #include "CollideComponent.hpp"
 #include "BulletComponent.hpp"
+#include "RandomMovementComponent.hpp"
 #include "../EnemyComponent.hpp"
 #include "UILabel.hpp"

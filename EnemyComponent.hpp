@@ -22,7 +22,7 @@ class EnemyComponent : public Component
         int getHealth() const { return health; }
         void hitByBullet();
         bool isDead();
-        void updateRandomMovement(float deltaTime);
+
         std::string getID() const {return ID;}
     private:
         TransformComponent* transform;
