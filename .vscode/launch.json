@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Administrator/Documents/GitHub/UET_Danmaku",
-      "program": "c:/Users/Administrator/Documents/GitHub/UET_Danmaku/build/Debug/outDebug",
+      "cwd": "c:/Users/cusnaruto/Desktop/bigproj/UET_Danmaku",
+      "program": "c:/Users/cusnaruto/Desktop/bigproj/UET_Danmaku/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

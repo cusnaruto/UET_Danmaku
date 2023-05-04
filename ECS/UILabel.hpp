@@ -9,27 +9,44 @@
 class UILabel : public Component
 {
     public:
-        UILabel(int xPos, int yPos, std::string text, std::string font, SDL_Color& color)
-            : labelText(text), labelFont(font), texColor(color)
+        UILabel(int xpos, int ypos, std::string text) :
+		    labelText(text)
         {
-            position.x = xPos;
-            position.y = yPos;
-
-            SetLabelText(labelText, labelFont);
+            position.x = xpos;
+		    position.y = ypos;
+            texColor.r = 255;
+            texColor.g = 255;
+            texColor.b = 255;
+            texColor.a = 255;
+		    labelTexture = NULL;
         }
         ~UILabel()
         {}
 
-        void SetLabelText(std::string text, std::string font)
+        void SetLabelText(TTF_Font* font)
         {
-            SDL_Surface* surf = TTF_RenderText_Blended(Game::assets->GetFont(font), text.c_str(),texColor);
+            SDL_Surface* surf = TTF_RenderText_Solid(font, labelText.c_str(), texColor);
             labelTexture = SDL_CreateTextureFromSurface(Game::renderer, surf);
             SDL_FreeSurface(surf);
             SDL_QueryTexture(labelTexture, nullptr, nullptr, &position.w, &position.h);
         }
+        void SetText(const std::string& text) { labelText = text; }
+	    std::string GetText() const {return labelText; }
         void draw() override
         {
             SDL_RenderCopy(Game::renderer, labelTexture, nullptr, &position);
+        }
+        void destroy()
+        {
+		SDL_DestroyTexture(labelTexture);
+		labelTexture = NULL;
+	    }
+        void setColor(Uint8 red,Uint8 green, Uint8 blue, Uint8 alpha)
+        {
+        texColor.r = red;
+        texColor.g = green;
+        texColor.b = blue;
+        texColor.a = alpha;
         }
     private:
         SDL_Rect position;

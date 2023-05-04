@@ -19,12 +19,8 @@ void GameOver::show(Game& game) {
         {
             printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         }
-    Mix_Music* bgmMusic = Mix_LoadMUS("assets/lose.mp3");
-    if( Mix_PlayingMusic() == 0 )
-            {
-                Mix_PlayMusic( bgmMusic, -1 );
-            }
-
+    Mix_Chunk* youlose = Mix_LoadWAV("assets/lose.mp3");
+    Mix_PlayChannel(-1,youlose,0);
     bool overActive = true;
     SDL_Event event;
     while (overActive) {
@@ -41,13 +37,10 @@ void GameOver::show(Game& game) {
         SDL_RenderCopy(game.renderer, menuTexture, nullptr, &menuRect);
         SDL_RenderPresent(game.renderer);
 
-        if (!Mix_PlayingMusic()) {
-            Mix_PlayMusic(bgmMusic, -1);
-        }
     }
 
     SDL_DestroyTexture(menuTexture);
-    Mix_FreeMusic(bgmMusic);
-    bgmMusic = NULL;
+    Mix_FreeChunk(youlose);
+    youlose = NULL;
     Mix_Quit();
 }

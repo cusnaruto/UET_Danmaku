@@ -19,7 +19,10 @@ SDL_Event Game::event;
 Mix_Music *gMusic = NULL;
 Mix_Music *bgmMusic = NULL;
 Mix_Chunk *playerDie = NULL;
+Mix_Chunk *enemyDie = NULL;
 Mix_Chunk *shoot = NULL;
+
+TTF_Font* font = NULL;
 
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
@@ -37,6 +40,9 @@ auto& cirnoBullet(manager.addEntity());
 auto& flanBullet(manager.addEntity());
 auto& flanBullet2(manager.addEntity());
 
+UILabel Lives(618,85, " ");
+UILabel Killed(625,132, " ");
+UILabel Left(610,175, " ");
 
 std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
@@ -53,7 +59,7 @@ Uint32 lastSpawnTime = 0;
 int x1 = -5;
 int x2 = 5;
 
-int playerLives = 99;
+int playerLives = 2;
 int Game::enemiesKilled = 0;
 
 bool BossIsSpawned = false;
@@ -61,9 +67,7 @@ bool BossIsSpawned = false;
 Game::Game()
 {
 }
-Game::~Game()
-{
-
+Game::~Game(){
 }
 
 
@@ -107,13 +111,19 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         playerDie = Mix_LoadWAV( "assets/playerdie.mp3" );
 	    if( playerDie == NULL )
 	    {
-		printf( "Failed to load scratch sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+		printf( "Failed to load playerDie sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+		isRunning = false;
+	    }   
+        enemyDie = Mix_LoadWAV( "assets/tan01.wav" );
+        if( enemyDie == NULL )
+	    {
+		printf( "Failed to load enemyDie sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
 		isRunning = false;
 	    }   
         shoot = Mix_LoadWAV( "assets/damage00.wav" );
 	    if( shoot == NULL )
 	    {
-		printf( "Failed to load scratch sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+		printf( "Failed to load damage sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
 		isRunning = false;
 	    }
 	    
@@ -121,6 +131,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     {
         std::cout << "font error" << std::endl;
     }
+    font = TTF_OpenFont("assets/visby.ttf", 16);
+    Lives.SetLabelText(font);
+    Lives.setColor(255,255,255,255);
 
     assets->AddTexture("mybullet", "assets/playerbullet.png");
     assets->AddTexture("enemy", "assets/fairy.png");
@@ -144,16 +157,12 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
     assets->AddTexture("background","assets/temp.jpg");
-    assets->AddFont("visby", "assets/visby.ttf", 16);
 
     Player.addComponent<TransformComponent>(285,500,49,32,1);
     Player.addComponent<SpriteComponent>("player", true);
     Player.addComponent<KeyboardController>();
     Player.addComponent<ColliderComponent>("player");
     Player.addGroup(groupPlayers);
-
-    SDL_Color white = {255,255,255,255};
-    label.addComponent<UILabel>(618,85, "727 wysi", "visby", white);
 
 
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
@@ -195,11 +204,7 @@ void Game::respawnPlayer() {
         --playerLives;
         Player.getComponent<TransformComponent>().position = Vector2D(283, 500);
         invulnerableTime = SDL_GetTicks() + 4000;
-    } else {
-        GameOver GameOver;
-        GameOver.show(*this);
-        isRunning = false;
-    }
+    } 
 }
 void Game::handleEvent()
 {
@@ -223,22 +228,39 @@ void Game::handleEvent()
 // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
 
 void Game::update() {
-    manager.refresh();
-    manager.update();
+    if (isRunning == true){
+    Lives.destroy();
+    Lives.SetLabelText(font);
+    Killed.destroy();
+    Killed.SetLabelText(font);
+    Left.destroy();
+    Left.SetLabelText(font);
+    std::stringstream ss,ss1,ss2;
+    ss << playerLives;
+    ss1 << enemiesKilled;
+    ss2 << 55 - enemiesKilled;
+    Lives.SetText(ss.str());
+    Killed.SetText(ss1.str());
+    Left.SetText(ss2.str());
     if (enemiesKilled == 55){
+    Mix_PauseMusic();
     YouWin youWin;
     youWin.show(*this);
     isRunning = false;
+    }
+    if (playerLives == 0){
+        Mix_PauseMusic();
+        GameOver GameOver;
+        GameOver.show(*this);
+        isRunning = false;
     }
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
     // Vector2D tempPos(playerPos.x,playerPos.y);
     srand(time(NULL));
-    std::stringstream ss;
-    ss << "Enemies killed: " << enemiesKilled;
-    label.getComponent<UILabel>().SetLabelText(ss.str(), "visby");
-
     deltaTime = SDL_GetTicks();
+    manager.refresh();
+    manager.update();
 
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
     if (enemiesKilled == 10 && BossIsSpawned == false) 
@@ -334,8 +356,8 @@ void Game::update() {
         else if (bs->getComponent<EnemyComponent>().getID() == "flan"){
             fireRate = 200;
             
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 3),1000,2,"flanBullet",16,16,2);
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 3),1000,2,"flanBullet",16,16,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 3),1000,2,"flanBullet2",17,10,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 3),1000,2,"flanBullet2",17,10,2);
             x1+=1;
             x2-=1;
             if (x1 == 5)
@@ -346,7 +368,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateBulletPattern(bulletPos,20,2,5,"flanBullet2",17,10,1);
+            assets->CreateBulletPattern(bulletPos,20,2,5,"flanBullet",16,16,1);
             }
         // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
         lastFireTime = SDL_GetTicks();
@@ -355,8 +377,12 @@ void Game::update() {
     for (auto& enemy : Enemies) {
         for (auto& b : bullets) {
             if (Collision::AABB(enemy->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
-                std::cout << "Hit enemy!" << std::endl;
+                // std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
+                if (enemy->getComponent<EnemyComponent>().getHealth() == 1)
+                {
+                    Mix_PlayChannel(-1,enemyDie,0);
+                }
                 enemy->getComponent<EnemyComponent>().hitByBullet();
             }
         }
@@ -364,7 +390,7 @@ void Game::update() {
     for (auto& Bosses : bosses) {
         for (auto& b : bullets) {
             if (Collision::AABB(Bosses->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
-                std::cout << "Hit enemy!" << std::endl;
+                // std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
                 Bosses->getComponent<EnemyComponent>().hitByBullet();
                 if (Bosses->getComponent<EnemyComponent>().getHealth() <= 0)
@@ -411,6 +437,7 @@ void Game::update() {
     } else if (playerPos.y + 19 > 555) {
         Player.getComponent<TransformComponent>().position.y = 555 - 19;
     }
+    }
 }
 
 
@@ -430,11 +457,11 @@ void Game::render()
     }
     for (auto& boss : bosses)
     {
-        boss->getComponent<SpriteComponent>().draw();
+        boss->draw();
     }
     for (auto& e : enemies)
     {
-        e->getComponent<SpriteComponent>().draw();
+        e->draw();
     }
     for (auto& eb : enemybullets)
     {
@@ -442,7 +469,9 @@ void Game::render()
     }
 
     Layout.draw();
-    label.draw();
+    Lives.draw();
+    Killed.draw();
+    Left.draw();
     SDL_RenderPresent(renderer);
 }
 
@@ -453,7 +482,9 @@ void Game::clean()
     Mix_FreeMusic(gMusic);
     Mix_FreeChunk(playerDie);
     Mix_FreeChunk(shoot);
+    Mix_FreeChunk(enemyDie);
     playerDie = NULL;
+    enemyDie = NULL;
     gMusic = NULL;
     shoot = NULL;
     Mix_Quit();
