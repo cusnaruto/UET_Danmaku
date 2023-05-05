@@ -43,11 +43,13 @@ auto& flanBullet2(manager.addEntity());
 UILabel Lives(618,85, " ");
 UILabel Killed(625,132, " ");
 UILabel Left(610,175, " ");
+UILabel FPS(700,20," ");
 
 std::vector<ColliderComponent*> Game::colliders;
 std::vector<Entity*> Enemies;
 
 Uint32 timeNow = SDL_GetTicks();
+float lastTime = 0;
 float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
 Uint32 fasterFireRate = 750;
@@ -59,7 +61,7 @@ Uint32 lastSpawnTime = 0;
 int x1 = -5;
 int x2 = 5;
 
-int playerLives = 2;
+int playerLives = 99;
 int Game::enemiesKilled = 0;
 
 bool BossIsSpawned = false;
@@ -229,19 +231,26 @@ void Game::handleEvent()
 
 void Game::update() {
     if (isRunning == true){
+    float currentTime = SDL_GetTicks() / 1000.0f;
+    deltaTime = currentTime - lastTime;
+    int fps = static_cast<int>(1 / deltaTime);
+    FPS.destroy();
+    FPS.SetLabelText(font);
     Lives.destroy();
     Lives.SetLabelText(font);
     Killed.destroy();
     Killed.SetLabelText(font);
     Left.destroy();
     Left.SetLabelText(font);
-    std::stringstream ss,ss1,ss2;
+    std::stringstream ss,ss1,ss2,ss3;
     ss << playerLives;
     ss1 << enemiesKilled;
     ss2 << 55 - enemiesKilled;
+    ss3 << "FPS: " << fps;
     Lives.SetText(ss.str());
     Killed.SetText(ss1.str());
     Left.SetText(ss2.str());
+    FPS.SetText(ss3.str());
     if (enemiesKilled == 55){
     Mix_PauseMusic();
     YouWin youWin;
@@ -258,7 +267,7 @@ void Game::update() {
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
     // Vector2D tempPos(playerPos.x,playerPos.y);
     srand(time(NULL));
-    deltaTime = SDL_GetTicks();
+    
     manager.refresh();
     manager.update();
 
@@ -401,6 +410,7 @@ void Game::update() {
             }
         }
     }
+    lastTime = currentTime;
     if (SDL_GetTicks() - lastFireTime >= fireRate){
     for (auto& enemy : Enemies) {
     auto& transform = enemy->getComponent<TransformComponent>();
@@ -438,6 +448,7 @@ void Game::update() {
         Player.getComponent<TransformComponent>().position.y = 555 - 19;
     }
     }
+    
 }
 
 
@@ -469,6 +480,7 @@ void Game::render()
     }
 
     Layout.draw();
+    FPS.draw();
     Lives.draw();
     Killed.draw();
     Left.draw();
