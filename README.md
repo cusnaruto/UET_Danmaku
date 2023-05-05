@@ -18,7 +18,8 @@
       </ul>
     </li>
     <li><a href="#How to play">How to play</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#Roadmap">Roadmap</a></li>
+    <li><a href="#Screenshot">Screenshots</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -95,6 +96,21 @@ Arrow keys for movement, `z` key for shooting.
 <!-- ROADMAP -->
 ## Roadmap
 
+- [x] Have graphics
+- [x] Have musics
+- [x] Have SFXs
+- [x] The player character has animation
+- [x] Running the game takes only ~30 mb of ram, no memory leak
+- [x] Enemies can aim the bullets at the player
+- [x] Bosses have their own bullet pattern
+- [x] Have a lose / win screen
+- [ ] Fixed a bug where the enemies/bosses sprites sometimes render, sometimes don't, randomly
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- Screenshot -->
+## Screenshot
+
 - [x] WIP
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -116,7 +132,8 @@ Here's the things I used while making the game.
 
 * [Game Sprite Sheets](https://www.spriters-resource.com/)
 * [Let's Make Games's SDL2 Tutorial](https://www.youtube.com/@CarlBirch)
-* [The Prismriver's Theme - Phantom Ensemble](https://www.youtube.com/watch?v=M9wHYiicY5I)
+* [Main Menu BGM](https://www.youtube.com/watch?v=ihhvufZWDkU)
+* [Stage BGM](https://www.youtube.com/watch?v=M9wHYiicY5I)
 * [Vine boom sound effect](https://www.youtube.com/watch?v=Oc7Cin_87H4)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

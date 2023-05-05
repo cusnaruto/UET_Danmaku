@@ -27,10 +27,6 @@ TTF_Font* font = NULL;
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
 auto& Mokou(manager.addEntity());
-auto& Koishi(manager.addEntity());
-auto& Cirno(manager.addEntity());
-auto& Chen(manager.addEntity());
-auto& Flan(manager.addEntity());
 auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
@@ -278,15 +274,16 @@ void Game::update() {
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
     if (enemiesKilled == 10 && BossIsSpawned == false) 
     {
-    // Mokou.addComponent<TransformComponent>(250,100,72,41,1);
-    // Mokou.addComponent<SpriteComponent>("mokou", false);
-    // Mokou.addComponent<ColliderComponent>("enemy");
-    // // Mokou.addComponent<RandomMovementComponent>(1,100,435);
-    // Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
-    // Mokou.addGroup(groupBosses);
-    // BossIsSpawned = true;
-    assets->createBoss(Vector2D(250,100),72,41,"mokou",50,0,"mokou");
+    
+    Mokou.addComponent<TransformComponent>(250,100,72,41,1);
+    Mokou.addComponent<SpriteComponent>("mokou");
+    Mokou.addComponent<ColliderComponent>("enemy");
+    // Mokou.addComponent<RandomMovementComponent>(1,100,435);
+    Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
+    Mokou.addGroup(groupBosses);
     BossIsSpawned = true;
+    // assets->createBoss(Vector2D(250,100),72,41,"mokou",50,0,"mokou");
+    // BossIsSpawned = true;
     }
     if (enemiesKilled == 21 && BossIsSpawned == false) {
     // auto& Koishi(manager.addEntity());
@@ -300,6 +297,7 @@ void Game::update() {
     BossIsSpawned = true;
     }
     if (enemiesKilled == 32 && BossIsSpawned == false) {
+    auto& Cirno(manager.addEntity());
     Cirno.addComponent<TransformComponent>(250,100,52,29,1);
     Cirno.addComponent<SpriteComponent>("cirno", false);
     Cirno.addComponent<ColliderComponent>("enemy");
@@ -308,6 +306,7 @@ void Game::update() {
     BossIsSpawned = true;
     }
     if (enemiesKilled == 43 && BossIsSpawned == false) {
+    auto& Chen(manager.addEntity());
     Chen.addComponent<TransformComponent>(250,100,61,43,1);
     Chen.addComponent<SpriteComponent>("chen", false);
     Chen.addComponent<ColliderComponent>("enemy");
@@ -316,6 +315,7 @@ void Game::update() {
     BossIsSpawned = true;
     }
     if (enemiesKilled == 54 && BossIsSpawned == false) {
+    auto& Flan(manager.addEntity());
     Flan.addComponent<TransformComponent>(250,100,69,43,1);
     Flan.addComponent<SpriteComponent>("flan", false);
     Flan.addComponent<ColliderComponent>("enemy");

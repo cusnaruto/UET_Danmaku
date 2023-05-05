@@ -38,7 +38,6 @@ void GameOver::show(Game& game) {
         SDL_RenderPresent(game.renderer);
 
     }
-
     SDL_DestroyTexture(menuTexture);
     Mix_FreeChunk(youlose);
     youlose = NULL;
