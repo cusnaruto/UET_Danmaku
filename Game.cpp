@@ -27,6 +27,10 @@ TTF_Font* font = NULL;
 auto& Player(manager.addEntity());
 auto& Enemy(manager.addEntity());
 auto& Mokou(manager.addEntity());
+auto& Koishi(manager.addEntity());
+auto& Cirno(manager.addEntity());
+auto& Chen(manager.addEntity());
+auto& Flan(manager.addEntity());
 auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
@@ -205,7 +209,7 @@ void Game::respawnPlayer() {
     if (playerLives > 0) {
         --playerLives;
         Player.getComponent<TransformComponent>().position = Vector2D(283, 500);
-        invulnerableTime = SDL_GetTicks() + 4000;
+        invulnerableTime = SDL_GetTicks() + 3000;
     } 
 }
 void Game::handleEvent()
@@ -296,7 +300,6 @@ void Game::update() {
     BossIsSpawned = true;
     }
     if (enemiesKilled == 32 && BossIsSpawned == false) {
-    auto& Cirno(manager.addEntity());
     Cirno.addComponent<TransformComponent>(250,100,52,29,1);
     Cirno.addComponent<SpriteComponent>("cirno", false);
     Cirno.addComponent<ColliderComponent>("enemy");
@@ -305,7 +308,6 @@ void Game::update() {
     BossIsSpawned = true;
     }
     if (enemiesKilled == 43 && BossIsSpawned == false) {
-    auto& Chen(manager.addEntity());
     Chen.addComponent<TransformComponent>(250,100,61,43,1);
     Chen.addComponent<SpriteComponent>("chen", false);
     Chen.addComponent<ColliderComponent>("enemy");
@@ -314,7 +316,6 @@ void Game::update() {
     BossIsSpawned = true;
     }
     if (enemiesKilled == 54 && BossIsSpawned == false) {
-    auto& Flan(manager.addEntity());
     Flan.addComponent<TransformComponent>(250,100,69,43,1);
     Flan.addComponent<SpriteComponent>("flan", false);
     Flan.addComponent<ColliderComponent>("enemy");
