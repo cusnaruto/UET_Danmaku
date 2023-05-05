@@ -34,7 +34,7 @@ This is a bullet hell game, heavily inspired by the [Touhou Project series](http
 This is made for my class's big project, INT2215.
 
 <p align="center">
-<img src="https://i.imgur.com/b4dGhwa.gif">
+<img src="https://i.imgur.com/OkCvVDj.jpg">
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
