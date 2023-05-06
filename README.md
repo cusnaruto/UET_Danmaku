@@ -104,7 +104,7 @@ Arrow keys for movement, `z` key for shooting.
 - [x] Enemies can aim the bullets at the player
 - [x] Bosses have their own bullet pattern
 - [x] Have a lose / win screen
-- [ ] Fixed a bug where the enemies/bosses sprites sometimes render, sometimes don't, randomly
+- [x] Fixed a bug where the enemies/bosses sprites sometimes render, sometimes don't, randomly
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -25,20 +25,10 @@ Mix_Chunk *shoot = NULL;
 TTF_Font* font = NULL;
 
 auto& Player(manager.addEntity());
-auto& Enemy(manager.addEntity());
-auto& Mokou(manager.addEntity());
-auto& bullet(manager.addEntity());
 auto& Layout(manager.addEntity());
 auto& Background(manager.addEntity());
 auto& label(manager.addEntity());
-auto& enemyBullet(manager.addEntity());
-auto& chenBullet(manager.addEntity());
-auto& mokouBullet(manager.addEntity());
-auto& koishiBullet(manager.addEntity());
-auto& koishiBullet2(manager.addEntity());
-auto& cirnoBullet(manager.addEntity());
-auto& flanBullet(manager.addEntity());
-auto& flanBullet2(manager.addEntity());
+
 
 UILabel Lives(618,85, " ");
 UILabel Killed(625,132, " ");
@@ -231,6 +221,7 @@ void Game::handleEvent()
 
 void Game::update() {
     if (isRunning == true){
+
     float currentTime = SDL_GetTicks() / 1000.0f;
     deltaTime = currentTime - lastTime;
     int fps = static_cast<int>(1 / deltaTime);
@@ -274,7 +265,7 @@ void Game::update() {
     std::vector<Entity*> Enemies(manager.getGroup(Game::groupEnemies).begin(), manager.getGroup(Game::groupEnemies).end());
     if (enemiesKilled == 10 && BossIsSpawned == false) 
     {
-    
+    auto& Mokou(manager.addEntity());
     Mokou.addComponent<TransformComponent>(250,100,72,41,1);
     Mokou.addComponent<SpriteComponent>("mokou");
     Mokou.addComponent<ColliderComponent>("enemy");
@@ -286,15 +277,15 @@ void Game::update() {
     // BossIsSpawned = true;
     }
     if (enemiesKilled == 21 && BossIsSpawned == false) {
-    // auto& Koishi(manager.addEntity());
-    // Koishi.addComponent<TransformComponent>(250,100,65,38,1);
-    // Koishi.addComponent<SpriteComponent>("koishi", false);
-    // Koishi.addComponent<ColliderComponent>("enemy");
-    // Koishi.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"koishi");
-    // Koishi.addGroup(groupBosses);
-    // BossIsSpawned = true;
-    assets->createBoss(Vector2D(250,100),65,38,"koishi",50,0,"koishi");
+    auto& Koishi(manager.addEntity());
+    Koishi.addComponent<TransformComponent>(250,100,65,38,1);
+    Koishi.addComponent<SpriteComponent>("koishi", false);
+    Koishi.addComponent<ColliderComponent>("enemy");
+    Koishi.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"koishi");
+    Koishi.addGroup(groupBosses);
     BossIsSpawned = true;
+    // assets->createBoss(Vector2D(250,100),65,38,"koishi",50,0,"koishi");
+    // BossIsSpawned = true;
     }
     if (enemiesKilled == 32 && BossIsSpawned == false) {
     auto& Cirno(manager.addEntity());
@@ -402,6 +393,10 @@ void Game::update() {
             if (Collision::AABB(Bosses->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
                 // std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
+                if (Bosses->getComponent<EnemyComponent>().getHealth() == 1)
+                {
+                    Mix_PlayChannel(-1,enemyDie,0);
+                }
                 Bosses->getComponent<EnemyComponent>().hitByBullet();
                 if (Bosses->getComponent<EnemyComponent>().getHealth() <= 0)
                 {
@@ -467,13 +462,13 @@ void Game::render()
     {
         b->getComponent<SpriteComponent>().draw();
     }
-    for (auto& boss : bosses)
-    {
-        boss->draw();
-    }
     for (auto& e : enemies)
     {
         e->draw();
+    }
+    for (auto& boss : bosses)
+    {
+        boss->draw();
     }
     for (auto& eb : enemybullets)
     {
