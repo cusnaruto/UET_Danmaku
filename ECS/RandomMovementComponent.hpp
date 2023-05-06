@@ -5,8 +5,8 @@
 
 class RandomMovementComponent : public Component {
 public:
-    RandomMovementComponent(int moveSpeed, int leftBoundary, int rightBoundary) :
-        speed(moveSpeed), left(leftBoundary), right(rightBoundary) {}
+    RandomMovementComponent(int moveSpeed, int leftBoundary, int rightBoundary, int delay) :
+        speed(moveSpeed), left(leftBoundary), right(rightBoundary), moveInterval(delay) {}
 
     void update() override {
         if (SDL_GetTicks() - lastTimeMoved > moveInterval) {
@@ -18,7 +18,7 @@ public:
 
             auto& transform = entity->getComponent<TransformComponent>();
             int newX = transform.position.x + velocity.x;
-            if (transform.position.x < left) {
+            if (transform.position.x <= left) {
             transform.position.x = left;
             transform.velocity.x *= -1;
         }

@@ -148,7 +148,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     assets->AddTexture("enemy4", "assets/fairy5.png");
     assets->AddTexture("player", "assets/reimu.png");
     assets->AddTexture("layout", "assets/gameplaylayout.png");
-    assets->AddTexture("background","assets/temp.jpg");
+    assets->AddTexture("background","assets/background.png");
 
     Player.addComponent<TransformComponent>(285,500,49,32,1);
     Player.addComponent<SpriteComponent>("player", true);
@@ -269,7 +269,7 @@ void Game::update() {
     Mokou.addComponent<TransformComponent>(250,100,72,41,1);
     Mokou.addComponent<SpriteComponent>("mokou");
     Mokou.addComponent<ColliderComponent>("enemy");
-    // Mokou.addComponent<RandomMovementComponent>(1,100,435);
+    Mokou.addComponent<RandomMovementComponent>(1,100,435,0);
     Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
     Mokou.addGroup(groupBosses);
     BossIsSpawned = true;
@@ -446,9 +446,6 @@ void Game::update() {
     }
     
 }
-
-
-
 
 void Game::render()
 {
