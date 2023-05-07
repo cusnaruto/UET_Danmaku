@@ -39,7 +39,7 @@ This is made for my class's big project, INT2215.
 </p>
 
 <p align="center">
-![alt text](https://github.com/cusnaruto/UET_Danmaku/blob/master/assets/reimu-fumo.gif)
+![alt text](UET_Danmaku/assets/reimu-fumo.gif)
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
