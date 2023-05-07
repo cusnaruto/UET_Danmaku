@@ -28,6 +28,7 @@
 
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 This is a bullet hell game, heavily inspired by the [Touhou Project series](https://en.wikipedia.org/wiki/Touhou_Project) made by [Team Shanghai Alice](https://en.wikipedia.org/wiki/Team_Shanghai_Alice).
@@ -39,7 +40,7 @@ This is made for my class's big project, INT2215.
 </p>
 
 <p align="center">
-![alt text](UET_Danmaku/assets/reimu-fumo.gif)
+![reimu-fumo](https://user-images.githubusercontent.com/119999945/236684505-7d706d5d-e074-46ac-9ff6-6af26d822513.gif)
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
