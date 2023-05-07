@@ -18,17 +18,6 @@ void AssetManager::CreateBullet(Vector2D pos,Vector2D vel, int range, int speed,
     bullet.addGroup(Game::groupBullets);
 }
 
-void AssetManager::createBoss(Vector2D pos, int width, int height, std::string id, int hp,int speed,std::string enemyid)
-{
-    auto& boss(manager->addEntity()); 
-    boss.addComponent<TransformComponent>(pos.x, pos.y, width, height, 1);
-    boss.addComponent<SpriteComponent>(id,false);
-    boss.addComponent<EnemyComponent>(speed, hp, Vector2D(0, 0),enemyid);
-    boss.addComponent<ColliderComponent>("enemy");
-    boss.addGroup(Game::groupBosses);
-}
-
-
 void AssetManager::createEnemy(Vector2D pos, int width, int height, std::string id, int hp,int speed,std::string enemyid)
 {
     auto& enemy(manager->addEntity()); 
