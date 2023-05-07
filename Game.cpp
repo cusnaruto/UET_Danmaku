@@ -42,7 +42,7 @@ Uint32 timeNow = SDL_GetTicks();
 float lastTime = 0;
 float Game::deltaTime = 0.0f;
 Uint32 fireRate = 2000;
-Uint32 fasterFireRate = 750;
+Uint32 fasterFireRate = 900;
 Uint32 lastFireTime = 0;
 Uint32 invulnerableTime = 0;
 const Uint32 spawnDelay = 2000;
@@ -51,7 +51,9 @@ Uint32 lastSpawnTime = 0;
 int x1 = -5;
 int x2 = 5;
 
-int playerLives = 99;
+float speed = 1;
+
+int playerLives = 20;
 int Game::enemiesKilled = 0;
 
 bool BossIsSpawned = false;
@@ -166,12 +168,6 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Background.addComponent<SpriteComponent>("background",false);
     Background.addComponent<ColliderComponent>("background");
     Background.addGroup(groupLayouts);
-
-    
-    // assets->createEnemy(Vector2D(50, 50), 29, 23, "enemy","enemy");
-    // assets->createEnemy(Vector2D(100, 100), 29, 23, "enemy1","enemy1");
-    // assets->createEnemy(Vector2D(150, 150), 29, 23, "enemy2","enemy2");
-
 }   
 
 void Game::spawnBullet()
@@ -216,9 +212,6 @@ void Game::handleEvent()
     }
 }
 
-// assets->CreateSineWaveBulletPattern(bulletPos,20,2,1000,"enemyBullet");
-// assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
-
 void Game::update() {
     if (isRunning == true){
 
@@ -256,7 +249,6 @@ void Game::update() {
     }
     SDL_Rect playerCol = Player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = Player.getComponent<TransformComponent>().position;
-    // Vector2D tempPos(playerPos.x,playerPos.y);
     srand(time(NULL));
     
     manager.refresh();
@@ -273,26 +265,24 @@ void Game::update() {
     Mokou.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"mokou");
     Mokou.addGroup(groupBosses);
     BossIsSpawned = true;
-    // assets->createBoss(Vector2D(250,100),72,41,"mokou",50,0,"mokou");
-    // BossIsSpawned = true;
     }
     if (enemiesKilled == 21 && BossIsSpawned == false) {
     auto& Koishi(manager.addEntity());
     Koishi.addComponent<TransformComponent>(250,100,65,38,1);
     Koishi.addComponent<SpriteComponent>("koishi", false);
     Koishi.addComponent<ColliderComponent>("enemy");
+    Koishi.addComponent<RandomMovementComponent>(1,100,435,0);
     Koishi.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"koishi");
     Koishi.addGroup(groupBosses);
     BossIsSpawned = true;
-    // assets->createBoss(Vector2D(250,100),65,38,"koishi",50,0,"koishi");
-    // BossIsSpawned = true;
     }
     if (enemiesKilled == 32 && BossIsSpawned == false) {
     auto& Cirno(manager.addEntity());
     Cirno.addComponent<TransformComponent>(250,100,52,29,1);
     Cirno.addComponent<SpriteComponent>("cirno", false);
     Cirno.addComponent<ColliderComponent>("enemy");
-    Cirno.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"cirno");
+    Cirno.addComponent<RandomMovementComponent>(1,100,435,0);
+    Cirno.addComponent<EnemyComponent>(0, 75, Vector2D(0, 0),"cirno");
     Cirno.addGroup(groupBosses);
     BossIsSpawned = true;
     }
@@ -301,7 +291,8 @@ void Game::update() {
     Chen.addComponent<TransformComponent>(250,100,61,43,1);
     Chen.addComponent<SpriteComponent>("chen", false);
     Chen.addComponent<ColliderComponent>("enemy");
-    Chen.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"chen");
+    Chen.addComponent<RandomMovementComponent>(1,100,435,0);
+    Chen.addComponent<EnemyComponent>(0, 75, Vector2D(0, 0),"chen");
     Chen.addGroup(groupBosses);
     BossIsSpawned = true;
     }
@@ -310,7 +301,8 @@ void Game::update() {
     Flan.addComponent<TransformComponent>(250,100,69,43,1);
     Flan.addComponent<SpriteComponent>("flan", false);
     Flan.addComponent<ColliderComponent>("enemy");
-    Flan.addComponent<EnemyComponent>(0, 50, Vector2D(0, 0),"flan");
+    Flan.addComponent<RandomMovementComponent>(1,100,435,0);
+    Flan.addComponent<EnemyComponent>(0, 100, Vector2D(0, 0),"flan");
     Flan.addGroup(groupBosses);
     BossIsSpawned = true;
     }
@@ -323,12 +315,18 @@ void Game::update() {
     }
     for (int j = 0; j < 5 && enemiesKilled < 32 && enemiesKilled >= 22; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 28,25,"enemy2",20,0,"enemy");
+        fireRate = 1850;
+        speed = 1.5;
     }
     for (int j = 0; j < 5 && enemiesKilled < 43 && enemiesKilled >= 33; j++) {
-        assets->createEnemy(Vector2D(50 + j * 100, 100), 32,20,"enemy3",20,0,"enemy");
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 32,20,"enemy3",25,0,"enemy");
+        fireRate = 1700;
+        speed = 2;
     }
     for (int j = 0; j < 5 && enemiesKilled < 54 && enemiesKilled >= 44; j++) {
-        assets->createEnemy(Vector2D(50 + j * 100, 100), 24,25,"enemy4",20,0,"enemy");
+        assets->createEnemy(Vector2D(50 + j * 100, 100), 24,25,"enemy4",35,0,"enemy");
+        fireRate = 1500;
+        speed = 2;
     }
         }
         if (SDL_GetTicks() - lastFireTime >= fireRate){
@@ -340,25 +338,25 @@ void Game::update() {
         Vector2D dir = (tempPos - enemyPos).normalize();
         Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
         if (bs->getComponent<EnemyComponent>().getID() == "mokou"){
-        assets->CreateFlowerPattern(bulletPos, 20,5,1000,2, "mokouBullet",16,16);}
+        assets->CreateFlowerPattern(bulletPos, 15,4,1000,1, "mokouBullet",16,16);}
         else if (bs->getComponent<EnemyComponent>().getID() == "koishi"){
-        assets->CreateConePattern(bulletPos,dir,60,20,1000,2,"koishiBullet",16,10,1);
-        assets->CreateFlowerPattern(bulletPos, 10,3,1000,1, "koishiBullet2",12,12);}
+        assets->CreateConePattern(bulletPos,dir,35,30,1000,1,"koishiBullet",16,10,1);
+        assets->CreateFlowerPattern(bulletPos, 5,2,1000,1, "koishiBullet2",12,12);}
         else if (bs->getComponent<EnemyComponent>().getID() == "cirno"){
         for (int i = -5; i < 5; i++)
         {
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+3)),1000,2,"cirnoBullet",18,10,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+1)),1000,2,"cirnoBullet",18,10,2);
         }
         }
         else if (bs->getComponent<EnemyComponent>().getID() == "chen"){
             fireRate = fasterFireRate;
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+1),1000,1,"chenBullet",29,19,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+0.5),1000,1,"chenBullet",29,19,2);
             }
         else if (bs->getComponent<EnemyComponent>().getID() == "flan"){
             fireRate = 200;
             
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 3),1000,2,"flanBullet2",17,10,2);
-            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 3),1000,2,"flanBullet2",17,10,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x1, 2),1000,2,"flanBullet2",17,10,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(x2, 2),1000,2,"flanBullet2",17,10,2);
             x1+=1;
             x2-=1;
             if (x1 == 5)
@@ -369,16 +367,14 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateBulletPattern(bulletPos,20,2,5,"flanBullet",16,16,1);
+            assets->CreateBulletPattern(bulletPos,24,2,6,"flanBullet",16,16,1);
             }
-        // assets->CreateFlowerPattern(bulletPos,20,4,1000,2,"enemyBullet");
         lastFireTime = SDL_GetTicks();
             }   
         }
     for (auto& enemy : Enemies) {
         for (auto& b : bullets) {
             if (Collision::AABB(enemy->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
-                // std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
                 if (enemy->getComponent<EnemyComponent>().getHealth() == 1)
                 {
@@ -391,7 +387,6 @@ void Game::update() {
     for (auto& Bosses : bosses) {
         for (auto& b : bullets) {
             if (Collision::AABB(Bosses->getComponent<ColliderComponent>().collider, b->getComponent<ColliderComponent>().collider)) {
-                // std::cout << "Hit enemy!" << std::endl;
                 b->destroy();
                 if (Bosses->getComponent<EnemyComponent>().getHealth() == 1)
                 {
@@ -415,9 +410,7 @@ void Game::update() {
     auto enemyPos = Vector2D(transform.position.x + transform.width / 2, transform.position.y + transform.height / 2);
     Vector2D dir = (tempPos - enemyPos).normalize();
     Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
-    assets->CreateEnemyBullet(bulletPos, dir ,1000,2, "enemyBullet",12,12,1);
-    
-    std::cout << "bullet fired" << std::endl;
+    assets->CreateEnemyBullet(bulletPos, dir ,1000,speed, "enemyBullet",12,12,1);
     lastFireTime = SDL_GetTicks();
              }   
         }
@@ -425,11 +418,9 @@ void Game::update() {
     {
         if (Collision::AABB(Player.getComponent<ColliderComponent>().collider, eb->getComponent<ColliderComponent>().collider)) {
                 if (SDL_GetTicks() > invulnerableTime) {
-                std::cout << "Hit player!" << std::endl;
                 Mix_PlayChannel(-1,playerDie,0);
                 eb->destroy();
                 respawnPlayer();
-                std::cout << playerLives << std::endl;
                 }
         }
     }
