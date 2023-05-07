@@ -18,11 +18,8 @@ void YouWin::show(Game& game) {
         {
             printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         }
-    Mix_Music* bgmMusic = Mix_LoadMUS("assets/lose.mp3");
-    if( Mix_PlayingMusic() == 0 )
-            {
-                Mix_PlayMusic( bgmMusic, -1 );
-            }
+    Mix_Chunk* youWin = Mix_LoadWAV("assets/win.wav");
+    Mix_PlayChannel(-1,youWin,0);
 
     bool winActive = true;
     SDL_Event event;
@@ -39,14 +36,9 @@ void YouWin::show(Game& game) {
         SDL_RenderClear(game.renderer);
         SDL_RenderCopy(game.renderer, menuTexture, nullptr, &menuRect);
         SDL_RenderPresent(game.renderer);
-
-        if (!Mix_PlayingMusic()) {
-            Mix_PlayMusic(bgmMusic, -1);
-        }
     }
-
     SDL_DestroyTexture(menuTexture);
-    Mix_FreeMusic(bgmMusic);
-    bgmMusic = NULL;
+    Mix_FreeChunk(youWin);
+    youWin = NULL;
     Mix_Quit();
 }

@@ -367,7 +367,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateBulletPattern(bulletPos,24,2,6,"flanBullet",16,16,1);
+            assets->CreateBulletPattern(bulletPos,30,1,8,"flanBullet",16,16,1);
             }
         lastFireTime = SDL_GetTicks();
             }   
