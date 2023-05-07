@@ -19,6 +19,7 @@
     </li>
     <li><a href="#How to play">How to play</a></li>
     <li><a href="#Roadmap">Roadmap</a></li>
+    <li><a href="#Gameplay">Gameplay</a></li>
     <li><a href="#Screenshot">Screenshots</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -34,11 +35,6 @@
 This is a bullet hell game, heavily inspired by the [Touhou Project series](https://en.wikipedia.org/wiki/Touhou_Project) made by [Team Shanghai Alice](https://en.wikipedia.org/wiki/Team_Shanghai_Alice).
 
 This is made for my class's big project, INT2215.
-
-<p align="center">
-<img src="https://i.imgur.com/OkCvVDj.jpg">
-</p>
-
 
 ![reimu-fumo](https://user-images.githubusercontent.com/119999945/236684505-7d706d5d-e074-46ac-9ff6-6af26d822513.gif)
 
@@ -113,10 +109,25 @@ Arrow keys for movement, `z` key for shooting.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- Gameplay -->
+## Gameplay
+
+- There will be 55 enemies, consist of 50 normal mobs and 5 bosses. 
+- Every 10 enemies killed, a boss will spawn and have an unique bullet pattern.
+- Enemies after killing the bosses will be shooting faster, and have more health points.
+- Kill all enemies to win.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- Screenshot -->
 ## Screenshot
 
-- [x] WIP
+![Screenshot_3](https://user-images.githubusercontent.com/119999945/236684763-c3577a6f-ed66-4488-bfd7-ba01dcdb8670.png)
+![Screenshot_6](https://user-images.githubusercontent.com/119999945/236684778-7ce8f670-7a7d-474d-bf43-858ebc9f8bea.png)
+![Screenshot_7](https://user-images.githubusercontent.com/119999945/236684793-a22ad1ca-e312-4247-95a8-31b2ec6665fb.png)
+![Screenshot_8](https://user-images.githubusercontent.com/119999945/236684804-50894ade-9eb5-4b02-a39f-567a829b0eb6.png)
+![Screenshot_5](https://user-images.githubusercontent.com/119999945/236684821-b6ceda45-c9fa-4b4b-aa9c-e67af913fad0.png)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -140,6 +151,7 @@ Here's the things I used while making the game.
 * [Main Menu BGM](https://www.youtube.com/watch?v=ihhvufZWDkU)
 * [Stage BGM](https://www.youtube.com/watch?v=M9wHYiicY5I)
 * [Vine boom sound effect](https://www.youtube.com/watch?v=Oc7Cin_87H4)
+* [Bruh sound effect](https://www.youtube.com/watch?v=2ZIpFytCSVc)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
