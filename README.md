@@ -46,7 +46,7 @@ This is made for my class's big project, INT2215.
 * [![C++][C++]]
 * [![SDL2][SDL2]]
 
-Using VS Code as my code editor.
+I used VS Code as my code editor, Photoshop and Audacity to edit the assets.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

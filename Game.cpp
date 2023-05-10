@@ -100,7 +100,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
         gMusic = Mix_LoadMUS( "assets/stagebgm.mp3" );
         if( Mix_PlayingMusic() == 0 )
             {
-                Mix_PlayMusic( gMusic, 1 );
+                Mix_PlayMusic( gMusic, 2 );
             }
         playerDie = Mix_LoadWAV( "assets/playerdie.mp3" );
 	    if( playerDie == NULL )
@@ -315,17 +315,17 @@ void Game::update() {
     }
     for (int j = 0; j < 5 && enemiesKilled < 32 && enemiesKilled >= 22; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 28,25,"enemy2",20,0,"enemy");
-        fireRate = 1850;
+        fireRate = 1800;
         speed = 1.5;
     }
     for (int j = 0; j < 5 && enemiesKilled < 43 && enemiesKilled >= 33; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 32,20,"enemy3",25,0,"enemy");
-        fireRate = 1700;
+        fireRate = 1600;
         speed = 2;
     }
     for (int j = 0; j < 5 && enemiesKilled < 54 && enemiesKilled >= 44; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 24,25,"enemy4",35,0,"enemy");
-        fireRate = 1500;
+        fireRate = 1400;
         speed = 2;
     }
         }
@@ -338,16 +338,16 @@ void Game::update() {
         Vector2D dir = (tempPos - enemyPos).normalize();
         Vector2D bulletPos(transform.position.x + transform.width / 2 - 3, transform.position.y + transform.height / 2);
         if (bs->getComponent<EnemyComponent>().getID() == "mokou"){
-        assets->CreateFlowerPattern(bulletPos, 15,4,1000,1, "mokouBullet",16,16);}
+        assets->CreateFlowerPattern(bulletPos, 20,5,1000,1, "mokouBullet",16,16);}
         else if (bs->getComponent<EnemyComponent>().getID() == "koishi"){
-        assets->CreateConePattern(bulletPos,dir,35,30,1000,1,"koishiBullet",16,10,1);
-        assets->CreateFlowerPattern(bulletPos, 5,2,1000,1, "koishiBullet2",12,12);}
+        assets->CreateConePattern(bulletPos,dir,40,30,1000,2,"koishiBullet",16,10,1);
+        assets->CreateFlowerPattern(bulletPos, 10,7,1000,1, "koishiBullet2",12,12);}
         else if (bs->getComponent<EnemyComponent>().getID() == "cirno"){
         for (int i = -5; i < 5; i++)
         {
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+1)),1000,2,"cirnoBullet",18,10,2);
-        }
-        }
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+1)),1000,3,"cirnoBullet",18,10,2);
+        } 
+            }
         else if (bs->getComponent<EnemyComponent>().getID() == "chen"){
             fireRate = fasterFireRate;
             assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x, dir.y+0.5),1000,1,"chenBullet",29,19,2);
@@ -367,7 +367,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateBulletPattern(bulletPos,30,1,8,"flanBullet",16,16,1);
+            assets->CreateBulletPattern(bulletPos,22,2,5,"flanBullet",16,16,1);
             }
         lastFireTime = SDL_GetTicks();
             }   
