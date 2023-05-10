@@ -168,6 +168,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Background.addComponent<SpriteComponent>("background",false);
     Background.addComponent<ColliderComponent>("background");
     Background.addGroup(groupLayouts);
+
+    
 }   
 
 void Game::spawnBullet()
@@ -316,7 +318,7 @@ void Game::update() {
     for (int j = 0; j < 5 && enemiesKilled < 32 && enemiesKilled >= 22; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 28,25,"enemy2",20,0,"enemy");
         fireRate = 1800;
-        speed = 1.5;
+        speed = 2;
     }
     for (int j = 0; j < 5 && enemiesKilled < 43 && enemiesKilled >= 33; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 32,20,"enemy3",25,0,"enemy");
@@ -326,7 +328,7 @@ void Game::update() {
     for (int j = 0; j < 5 && enemiesKilled < 54 && enemiesKilled >= 44; j++) {
         assets->createEnemy(Vector2D(50 + j * 100, 100), 24,25,"enemy4",35,0,"enemy");
         fireRate = 1400;
-        speed = 2;
+        speed = 3;
     }
         }
         if (SDL_GetTicks() - lastFireTime >= fireRate){
@@ -367,7 +369,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateBulletPattern(bulletPos,22,2,5,"flanBullet",16,16,1);
+            assets->CreateBulletPattern(bulletPos,20,2,5,"flanBullet",16,16,1);
             }
         lastFireTime = SDL_GetTicks();
             }   
