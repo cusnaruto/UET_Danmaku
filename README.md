@@ -152,6 +152,7 @@ Here's the things I used while making the game.
 * [Stage BGM](https://www.youtube.com/watch?v=M9wHYiicY5I)
 * [Vine boom sound effect](https://www.youtube.com/watch?v=Oc7Cin_87H4)
 * [Bruh sound effect](https://www.youtube.com/watch?v=2ZIpFytCSVc)
+* [Lazy Foo Productions](https://lazyfoo.net/tutorials/SDL/index.php)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
