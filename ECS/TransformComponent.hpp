@@ -28,7 +28,7 @@ class TransformComponent : public Component
             position.Zero();
         }
 
-        TransformComponent(float x, float y,int h, int w, float s)
+        TransformComponent(float x, float y,int h, int w, int s)
         {
             position.x = x;
             position.y = y;

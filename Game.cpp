@@ -158,7 +158,6 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
     Player.addComponent<ColliderComponent>("player");
     Player.addGroup(groupPlayers);
 
-
     Layout.addComponent<TransformComponent>(0.0f,0.0f,600,800,1);
     Layout.addComponent<SpriteComponent>("layout",false);
     Layout.addComponent<ColliderComponent>("layout");
@@ -216,7 +215,6 @@ void Game::handleEvent()
 
 void Game::update() {
     if (isRunning == true){
-
     float currentTime = SDL_GetTicks() / 1000.0f;
     deltaTime = currentTime - lastTime;
     int fps = static_cast<int>(1 / deltaTime);
@@ -347,7 +345,7 @@ void Game::update() {
         else if (bs->getComponent<EnemyComponent>().getID() == "cirno"){
         for (int i = -5; i < 5; i++)
         {
-            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+1)),1000,3,"cirnoBullet",18,10,2);
+            assets->CreateEnemyBullet(bulletPos,Vector2D(dir.x+i,std::abs(dir.y+2)),1000,1,"cirnoBullet",18,10,2);
         } 
             }
         else if (bs->getComponent<EnemyComponent>().getID() == "chen"){
@@ -369,7 +367,7 @@ void Game::update() {
             {
                 x2 = 5;
             }
-            assets->CreateBulletPattern(bulletPos,20,2,5,"flanBullet",16,16,1);
+            assets->CreateBulletPattern(bulletPos,20,2,10,"flanBullet",16,16,1);
             }
         lastFireTime = SDL_GetTicks();
             }   

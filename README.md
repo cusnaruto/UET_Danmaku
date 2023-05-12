@@ -105,7 +105,7 @@ Arrow keys for movement, `z` key for shooting.
 - [x] Enemies can aim the bullets at the player
 - [x] Bosses have their own bullet pattern
 - [x] Have a lose / win screen
-- [x] Fixed a bug where the enemies/bosses sprites sometimes render, sometimes don't, randomly
+- [x] Mostly bugless
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -136,7 +136,7 @@ Arrow keys for movement, `z` key for shooting.
 
 Le Cong Hoang @ UET - 22026555@vnu.edu.vn
 
-Project Link: [https://github.com/cusnaruto/UET_Danmaku](https://github.com/cusnaruto/UET_Danmaku)
+Project Link: [UET_Danmaku](https://github.com/cusnaruto/UET_Danmaku)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
