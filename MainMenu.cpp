@@ -36,6 +36,7 @@ void MainMenu::show(Game& game) {
             switch (event.type) {
                 case SDL_QUIT:
                 game.quit();
+                SDL_Quit();
                 menuActive = false;
                 break;
                 case SDL_KEYDOWN:
