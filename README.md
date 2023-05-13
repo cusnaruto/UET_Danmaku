@@ -21,6 +21,8 @@
     <li><a href="#Roadmap">Roadmap</a></li>
     <li><a href="#Gameplay">Gameplay</a></li>
     <li><a href="#Screenshot">Screenshots</a></li>
+    <li><a href="#Future-Upgrades">Future Upgrades</a></li>
+    <li><a href="#What-I-Have-Learned">What I Have Learned</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -38,6 +40,9 @@ This is made for my class's big project, INT2215.
 
 ![reimu-fumo](https://user-images.githubusercontent.com/119999945/236684505-7d706d5d-e074-46ac-9ff6-6af26d822513.gif)
 
+# Why This Game?
+
+I really like Touhou, that's why.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -140,6 +145,26 @@ Project Link: [UET_Danmaku](https://github.com/cusnaruto/UET_Danmaku)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- Future Upgrades -->
+## Future Upgrades
+
+- [ ] More enemies, bosses with unique bullet patterns.
+- [ ] More characters to choose.
+- [ ] Extra difficulties.
+- [ ] Player bullet upgrades.
+- [ ] Bombs.
+- [ ] Cutscenes, dialogues, HP bar.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- What I Have Learned -->
+## What I Have Learned
+
+* Problem solving skills.
+* Know more about class, pointer, github and make.
+* Learned about how to find resources online.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
